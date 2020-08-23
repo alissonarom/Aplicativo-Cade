@@ -17,6 +17,8 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [infos, setInfos] = useState({});
   const [likeColor, setLikeColor] = useState("#aeafb5");
+  const [follow, setFollow] = useState("adduse");
+  const [seguirColor, setSeguirColor] = useState("#aeafb5");
 
   LayoutAnimation.easeInEaseOut();
 
@@ -59,25 +61,29 @@ if (loading) {
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
-          <View style={styles.cardLeft}>
-            <Image
-              source={{uri: infos.avatar}}
-              style={styles.avatar}
-            />
-            <View>
-              <Text style={{fontSize: 15, fontWeight: "900"}}>{infos.name} {""}
-              <Text style={styles.cardTime}>
-              <AntDesign name="enviroment" size={15} color="#ffd300" />Shangri-lá A</Text>
-              </Text>
-              
-              <Text style={styles.cardTime}>
-                {moment(item.timestamp).locale('pt-br').fromNow(true)}
-              </Text>
+        <View style={styles.cardLeft}>
+          <Image
+            source={{uri: infos.avatar}}
+            style={styles.avatar}
+          />
+          <View>
+            <Text style={{fontSize: 15, fontWeight: "900"}}>{infos.name} {""}
+            <Text style={styles.cardTime}>
+            <AntDesign name="enviroment" size={15} color="#ffd300" />Shangri-lá A</Text>
+            </Text>
+            
+            <Text style={styles.cardTime}>
+              {moment(item.timestamp).locale('pt-br').fromNow(true)}
+            </Text>
           </View>
         </View>
-        <View style={styles.cardLeft}>
-          <AntDesign name="ellipsis1" size={25} color="#000000" />
-        </View>
+        <TouchableOpacity onPress={() => seguir(item)} style={styles.cardLeft}>
+          <AntDesign
+            name={follow}
+            size={25}
+            color={seguirColor}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.cardContent}>
           <Text style={{color: '#000000', fontSize: 13 }}>
@@ -149,6 +155,18 @@ if (loading) {
       setLikeColor("#ed2c09");
     } else {
       setLikeColor("#aeafb5");
+    }
+    item.site_admin = true;
+  }
+
+  // botão seguir
+  function seguir(item) {
+    if (follow === "adduse") {
+      setFollow("star");
+      setSeguirColor("#ffd300");
+    } else {
+      setFollow("adduse");
+      setSeguirColor("#d1d1d1");
     }
     item.site_admin = true;
   }
