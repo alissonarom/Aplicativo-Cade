@@ -9,6 +9,7 @@ import { AntDesign } from '@expo/vector-icons';
 const firebase = require('firebase');
 require('firebase/firestore');
 import moment from 'moment';
+import 'moment/locale/pt-br';
 import { TouchableOpacity } from "react-native-gesture-handler";
 moment().format();
 
@@ -17,7 +18,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [infos, setInfos] = useState({});
   const [likeColor, setLikeColor] = useState("#aeafb5");
-  const [follow, setFollow] = useState("adduse");
+  const [follow, setFollow] = useState("checkcircleo");
   const [seguirColor, setSeguirColor] = useState("#aeafb5");
 
   LayoutAnimation.easeInEaseOut();
@@ -27,6 +28,7 @@ export default function Home() {
     const feed =
     firebase.firestore()
     .collection('posts')
+    .orderBy('timestamp', 'desc')
     .onSnapshot(querySnapshot => {
       const posts = [];
 
@@ -121,7 +123,7 @@ if (loading) {
             <TouchableOpacity style={{flexDirection: "row", alignItems: "center"}} onPress={() => like(item)}>
               <AntDesign
                 name={"like2"}
-                size={28}
+                size={22}
                 color={"#000000"}
                 style={{ marginRight: 5 }}
               />
@@ -130,7 +132,7 @@ if (loading) {
             <TouchableOpacity style={{flexDirection: "row", alignItems: "center"}} onPress={() => like(item)}>
               <AntDesign
                 name={"message1"}
-                size={28}
+                size={22}
                 color={"#000000"}
                 style={{ marginRight: 5 }}
               />
@@ -139,7 +141,7 @@ if (loading) {
             <TouchableOpacity style={{flexDirection: "row", alignItems: "center"}} onPress={() => like(item)}>
               <AntDesign
                 name={"sharealt"}
-                size={28}
+                size={22}
                 color={"#000000"}
                 style={{ marginRight: 5 }}
               />
@@ -161,11 +163,11 @@ if (loading) {
 
   // botão seguir
   function seguir(item) {
-    if (follow === "adduse") {
-      setFollow("star");
-      setSeguirColor("#ffd300");
+    if (follow === "checkcircleo") {
+      setFollow("checkcircle");
+      setSeguirColor("#0080ff");
     } else {
-      setFollow("adduse");
+      setFollow("checkcircleo");
       setSeguirColor("#d1d1d1");
     }
     item.site_admin = true;

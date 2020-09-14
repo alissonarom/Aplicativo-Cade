@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "cade3",
-    "slug": "cade3",
+    "name": "cade",
+    "slug": "cade",
     "platforms": [
       "ios",
       "android",
@@ -23,6 +23,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": ""
   }
 }

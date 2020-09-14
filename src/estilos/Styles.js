@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
     cardIcons: {
       flexDirection: "row",
       justifyContent: "space-between",
-      paddingVertical: 10,
+      paddingVertical: 8,
+      paddingHorizontal: 10,
       borderTopColor: "#d1d1d1",
       borderTopWidth: 1,
     },
