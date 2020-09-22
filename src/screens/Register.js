@@ -16,15 +16,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-//export default function Register() {
-//  const [name, setName] = useState("");
-//  const [email, setEmail] = useState("");
-//  const [password, setPassword] = useState("");
-//  const [error, setError] = useState(null);
-//  const [loading, setLoading] = useState(false);
-//  const [avatar, setAvatar] = useState(null);
-//  const navigation = useNavigation();
-
 export default class Register extends React.Component {
     state = {
         user: {

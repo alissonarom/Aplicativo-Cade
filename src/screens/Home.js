@@ -4,6 +4,8 @@ import { View, Text, StyleSheet, StatusBar, Image, FlatList, LayoutAnimation, Ac
 import Header from "../header/Header"
 import styles from "../estilos/Styles"
 import 'firebase/firestore';
+import "firebase/auth";
+
 import Fire from '../config/Fire';
 import { AntDesign } from '@expo/vector-icons';
 const firebase = require('firebase');
@@ -25,9 +27,9 @@ export default function Home() {
 
   useEffect(() => {
     console.disableYellowBox = true;
-    const feed =
-    firebase.firestore()
-    .collection('posts')
+    const user = firebase.auth().currentUser.uid;
+    const feed = 
+    firebase.firestore().collection("posts/" + user + "/userPosts")
     .orderBy('timestamp', 'desc')
     .onSnapshot(querySnapshot => {
       const posts = [];
@@ -152,6 +154,7 @@ if (loading) {
     </View>
   );
 
+  // botão seguir
   function like(item) {
     if (likeColor === "#aeafb5") {
       setLikeColor("#ed2c09");

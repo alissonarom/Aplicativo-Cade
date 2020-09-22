@@ -1,0 +1,2 @@
+[0914/171332.942:ERROR:process_info.cc(329)] VirtualQueryEx: Acesso negado. (0x5)
+[0914/171332.989:ERROR:process_info.cc(556)] ReadMemoryInfo failed

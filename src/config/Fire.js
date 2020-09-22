@@ -19,21 +19,18 @@ class Fire {
      firebase.initializeApp(firebaseConfig);
      
    }
-   console.ignoredYellowBox = true;
   }
 
   addPost = async ({ text, localUri}) => {
     const remoteUri =  await this.uploadPhotoAsync(localUri, `photos/${this.uid}/${Date.now()}`)
       return new Promise((res, rej) => {
           this.firestore
-            .collection("posts")
+            .collection("posts/" + this.uid + "/userPosts")
             .add({
                   text,
                   uid: this.uid,
                   timestamp: this.timestamp,
-                  image: remoteUri
-                  
-                  
+                  image: remoteUri                  
           })
           .then(ref => {
             res(ref)
@@ -44,31 +41,6 @@ class Fire {
     });
   };
 
-//  addPost = async ({ text, localUri }) => {
-//    this.uploadPhotoAsync(localUri)
-//      .then((uri) => {
-//        new Promise(async (res, rej) => {
-//         
-//          const response = await firebase
-//            .firestore()
-//            .collection("posts")
-//            .doc(this.uid)
-//            ({
-//                  text,
-//                  uid: this.uid,
-//                  timestamp: new Date().getTime(),
-//                  image: uri,
-//                  userName: this.userName
-//              });
-//          console.log("resposta do addPost(): ", response);
-//          return res(response);
-//        });
-//      })
-//      .catch((err) => {
-//        rej(err);
-//        console.log("erro : ", err);
-//      });
-//  };
   uploadPhotoAsync = async (uri, filename) => {  
     return new Promise(async (res, rej) => {
       const response = await fetch(uri);
@@ -116,44 +88,6 @@ class Fire {
         alert("Erro: ", error);
       }
   };
-
-  
-//  sendMessage = (messages) => {
-//    messages.forEach((item) => {
-//      const message = {
-//        text: item.text,
-//        timestamp: this.timestamp,
-//        user: item.user,
-//      };
-//
-//      this.db.push(message);
-//    });
-//  };
-//
-//  parse = (message) => {
-//    const { user, text, timestamp } = message.val();
-//    const { key: _id } = message;
-//    const createdAt = new Date(timestamp);
-//
-//    return {
-//      _id,
-//      createdAt,
-//      text,
-//      user,
-//    };
-//  };
-
-  get = (callback) => {
-    this.db.on("child_added", (snapshot) => callback(this.parse(snapshot)));
-  };
-
-  off() {
-    this.db.off();
-  }
-
-  get db() {
-    return firebase.database().ref("messages");
-  }
 
   get singOut() {
     return firebase.auth().signOut();
