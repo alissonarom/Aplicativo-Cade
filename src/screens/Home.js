@@ -154,7 +154,7 @@ if (loading) {
     </View>
   );
 
-  // botão seguir
+  // botão like
   function like(item) {
     if (likeColor === "#aeafb5") {
       setLikeColor("#ed2c09");
@@ -162,6 +162,10 @@ if (loading) {
       setLikeColor("#aeafb5");
     }
     item.site_admin = true;
+  }
+
+  function likeCount(){
+    if()
   }
 
   // botão seguir
