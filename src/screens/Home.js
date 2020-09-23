@@ -165,7 +165,9 @@ if (loading) {
   }
 
   function likeCount(){
-    if()
+    if(){
+      
+    }
   }
 
   // botão seguir
