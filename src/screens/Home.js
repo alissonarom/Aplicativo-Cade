@@ -71,7 +71,7 @@ if (loading) {
             style={styles.avatar}
           />
           <View>
-            <Text style={{fontSize: 15, fontWeight: "900"}}>{infos.name} {""}
+            <Text style={{fontSize: 15, fontWeight: "900"}}>{item.autor}
             <Text style={styles.cardTime}>
             <AntDesign name="enviroment" size={15} color="#ffd300" />Shangri-lá A</Text>
             </Text>
@@ -164,11 +164,11 @@ if (loading) {
     item.site_admin = true;
   }
 
-  function likeCount(){
-    if(){
-      
-    }
-  }
+//  function likeCount(){
+//  if(){
+//      
+//    }
+//  }
 
   // botão seguir
   function seguir(item) {
