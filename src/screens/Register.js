@@ -44,21 +44,6 @@ export default class Register extends React.Component {
 
   handleSignUp = () => {
     Fire.shared.createUser(this.state.user);
-//    setLoading(true);
-//    firebase
-//      .auth()
-//      .createUserWithEmailAndPassword(email, password)
-//      .then((userCredentials) => {
-//        setLoading(false);
-//        userCredentials.user.updateProfile({
-//          displayName: name,
-//        });
-//        navigation.navigate("AppTab", { screen: "home" });
-//      })
-//      .catch((err) => {
-//        setLoading(false);
-//        setError(err.message);
-//      });
   } 
 
   render() {

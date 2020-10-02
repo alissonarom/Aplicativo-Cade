@@ -27,9 +27,8 @@ export default function Home() {
 
   useEffect(() => {
     console.disableYellowBox = true;
-    const user = firebase.auth().currentUser.uid;
     const feed = 
-    firebase.firestore().collection("posts/" + user + "/userPosts")
+    firebase.firestore().collection("posts")
     .orderBy('timestamp', 'desc')
     .onSnapshot(querySnapshot => {
       const posts = [];
@@ -67,7 +66,7 @@ if (loading) {
       <View style={styles.cardHeader}>
         <View style={styles.cardLeft}>
           <Image
-            source={{uri: infos.avatar}}
+            source={{uri: item.avatar}}
             style={styles.avatar}
           />
           <View>

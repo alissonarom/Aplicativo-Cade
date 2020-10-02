@@ -1,4 +1,3 @@
-import React from "react";
 import * as firebase from "firebase";
 const firebaseConfig  = {
   apiKey: "AIzaSyBL3bmg94GhzXKmDYO1cVXql7veeitMd1E",
@@ -13,34 +12,25 @@ import 'firebase/firestore';
 import 'firebase/storage';
 import "firebase/auth";
 
-class Fire extends React.Component {
-  state = {
-    user: {}
-};
+class Fire{
  constructor() {
    if (!firebase.apps.length) {
      firebase.initializeApp(firebaseConfig);
    }
   }
 
-  addPost = async ({ text, localUri}) => {
+  addPost = async ({ text, localUri, avatar, autor}) => {
     const remoteUri =  await this.uploadPhotoAsync(localUri, `photos/${this.uid}/${Date.now()}`)
-    const infos = this.userInfos
-            .get()
-            .then(function (doc) {
-              this.setStste(doc.data());
-            })
-            .catch(function (error) {
-              console.log("Error getting document:", error);
-            });
           return new Promise((res, rej) => {
           this.firestore
-            .collection("posts/" + this.uid + "/userPosts")
+            .collection("posts")
             .add({
                   text,
                   uid: this.uid,
                   timestamp: this.timestamp,
                   image: remoteUri,
+                  avatar,
+                  autor
 
           })
           .then(ref => {
