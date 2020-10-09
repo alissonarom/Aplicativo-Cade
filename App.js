@@ -1,9 +1,14 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { AntDesign } from '@expo/vector-icons';
+import { View, SafeAreaView, StatusBar, Text} from "react-native";
+import { Header, Icon, Button, Avatar } from 'react-native-elements';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import Fire from './src/config/Fire';
+import 'firebase/firestore';
 
 import Login from "./src/screens/Login";
 import Home from "./src/screens/Home";
@@ -11,9 +16,11 @@ import Profile from "./src/screens/Profile";
 import Post from "./src/screens/Post";
 import Register from "./src/screens/Register";
 import Loading from "./src/screens/Loading"
+import Modal from "./src/screens/Modal"
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 function AppTab() {
   return (
@@ -33,7 +40,7 @@ function AppTab() {
         component={Home}
         options={{
           tabBarIcon: ({ color }) => (
-            <AntDesign name="home" color={color} size={26} />
+            <AntDesign name="search1" color={color} size={26} />
           ),
         }}
       />
@@ -78,23 +85,65 @@ function AuthStack() {
   );
 }
 
-export default function App() {
+function CustomDrawerContent() {
+  const [infos, setInfos] = useState({});
+
+  useEffect(() => {
+    console.disableYellowBox = true;
+
+    Fire.shared.userInfos
+      .get()
+      .then(function (doc) {
+        setInfos(doc.data());
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
+
+  }, []);
   return (
-    <NavigationContainer>
-      <Stack.Navigator headerMode="none" mode="modal">
-        <Stack.Screen name="loading" component={Loading} />
-        <Stack.Screen name="AuthStack" component={AuthStack} />
-        <Stack.Screen name="AppTab" component={AppTab} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaView style={{
+      flexDirection:"row",
+      backgroundColor: "#ffe700",
+      width: "100%",
+      alignItems:"center",
+      paddingTop: 40,
+      paddingVertical:10,
+      paddingHorizontal: 10,
+      paddingBottom: 10
+    }}>
+        <StatusBar barStyle={'dark-content'} backgroundColor={"#ffd300"}/>
+        <Avatar 
+          rounded
+          source={{ uri: infos.avatar }} 
+          size="large"
+          backgroundColor="#C8C8C8"
+        />
+        <View style={{ alignItems:"center", padding:5 }}>
+          <Text style={{ fontSize: 15, marginTop: 0 }}>{infos.name}</Text>
+          <Text style={{ fontSize: 15, marginTop: 0 }}>{infos.email}</Text>
+        </View>
+      </SafeAreaView>
+  );
+}
+function MyDrawer() {
+  return (
+    <Drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
+      <Drawer.Screen name="Home" component={AppTab} />
+      <Drawer.Screen name="AuthStack" component={AuthStack} />
+      <Drawer.Screen name="Loading" component={Loading} />
+      <Drawer.Screen name="Modal" component={Modal} />
+    </Drawer.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+
+  return (
+      <NavigationContainer>
+        <MyDrawer />
+      </NavigationContainer>
+    
+  );
+}
+
