@@ -40,7 +40,6 @@ export default function Post() {
 
   }, []);
   
-
   async function getPhotoPermissions() {
     if (Constants.platform.android) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);

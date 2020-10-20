@@ -18,7 +18,7 @@ class Fire{
      firebase.initializeApp(firebaseConfig);
    }
   }
-
+  
   addPost = async ({ text, localUri, avatar, autor}) => {
     const remoteUri =  await this.uploadPhotoAsync(localUri, `photos/${this.uid}/${Date.now()}`)
           return new Promise((res, rej) => {
@@ -66,25 +66,32 @@ class Fire{
     });
   };
 
-  createUser = async user => {
+  createUser = async ({name, email, password, avatar, detalhes, cnpjcpf, infoCep }) => {
     let remoteUri = null
 
     try {
-      await firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
-
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
+    
       let db = this.firestore.collection("users").doc(this.uid);
 
       db.set({
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar
+        empresa: name,
+        email: email,
+        avatar: avatar,
+        detalhes: detalhes,
+        cnpjcpf: cnpjcpf,
+        bairro:infoCep.neighborhood,
+        cep: infoCep.cep,
+        cidade: infoCep.city,
+        estado: infoCep.state
       });
 
-      if (user.avatar) {
-          remoteUri =  this.uploadPhotoAsync(user.avatar, `avatars/${this.uid}`);
+      if (avatar) {
+          remoteUri =  this.uploadPhotoAsync(avatar, `avatars/${this.uid}`);
 
           db.set({avatar: remoteUri}, {merge: true});
       }
+      
     } catch (error) {
         alert("Erro: ", error);
       }
@@ -99,7 +106,7 @@ class Fire{
   }
 
   get userInfos() {
-    return firebase.firestore().collection("users").doc(this.uid) ;
+    return firebase.firestore().collection("users").doc(this.uid);
   }
 
   get uid() {

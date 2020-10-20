@@ -2,7 +2,7 @@ adb -s RQ8N207R0MK reverse tcp:8081 tcp:8081
 npx react-native start
 expo start
 
-recado da vovó:
+recado da vovó GitHub:
 Alisson
 @
 91089047

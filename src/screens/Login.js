@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { Icon, Avatar, Button, Input } from 'react-native-elements';
 import * as firebase from "firebase";
 import {
   View,
   Text,
   Image,
-  TextInput,
+  SafeAreaView,
   StatusBar,
   StyleSheet,
-  LayoutAnimation,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
@@ -18,8 +18,8 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-  
     const navigation = useNavigation();
+  
   
     function handleLogin() {
       setLoading(true);
@@ -28,7 +28,7 @@ export default function Login() {
         .signInWithEmailAndPassword(email, password)
         .then(function () {
           setLoading(false);
-          navigation.navigate("AppTab", { screen: "home" });
+          navigation("AppTab", { screen: "home" });
         })
         .catch((err) => {
           setLoading(false);
@@ -36,33 +36,40 @@ export default function Login() {
         });
     }
   
-    LayoutAnimation.easeInEaseOut();
-  
     return (
-      <View style={styles.container}>
-        <Image source={require('../../assets/icone.neo.png')} style={styles.image} />
+      <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor="#ffd300" barStyle="dark-content" />
-        <View style={{ width: "100%", height: "auto" }}>
+        <Image source={require('../../assets/icone.neo.png')} style={styles.image} />
+        <View style={{ width: "100%" }}>
           <View style={styles.errorMessage}>
-            {error && <Text style={styles.error}>{error}</Text>}
+            {error && <Text style={styles.error}>Email ou senha inválidos</Text>}
           </View>
   
           <View style={styles.form}>
             <View>
-              <Text style={styles.inputTitle}>Email</Text>
-              <TextInput
-                style={styles.input}
+              <Input
+                inputContainerStyle={{
+                  borderColor:"black"
+                }}
+                leftIcon={{ type: 'material', name: 'email', marginHorizontal: 10 }}
+                placeholder="Email"
+                placeholderTextColor="black"
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
+                errorStyle={{ color: 'red' }}
               />
             </View>
   
-            <View style={{ marginTop: 32 }}>
-              <Text style={styles.inputTitle}>Senha</Text>
-              <TextInput
-                style={styles.input}
-                secureTextEntry
+            <View >
+              <Input
+                inputContainerStyle={{
+                  borderColor:"black"
+                }}
+                leftIcon={{ type: 'material', name: 'vpn-key', marginHorizontal: 10  }}
+                secureTextEntry={true}
+                placeholder="Senha"
+                placeholderTextColor="black"
                 autoCapitalize="none"
                 value={password}
                 onChangeText={setPassword}
@@ -74,50 +81,35 @@ export default function Login() {
             {loading ? (
               <ActivityIndicator size="small" color="#FFd300" />
             ) : (
-              <Text style={{ color: "#FFF", fontWeight: "500" }}>Entrar</Text>
+              <Text style={{ color: "#FFF", fontWeight: "500", fontSize: 16 }}>Entrar</Text>
             )}
           </TouchableOpacity>
   
           <TouchableOpacity style={styles.buttonLogin} onPress={() => navigation.navigate("register")}>
-            <Text style={{ color: "#000", fontSize: 13 }}>
-              Cadastre-se
+            <Text style={{ color: "#000", fontSize: 16 }}>
+              Cadastrar
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center",
       alignItems: "center",
       backgroundColor: "#ffd300"
     },
     image: {
       width: 250,
       height: 140,
-    },
-    imageFooter: {
-      position: "absolute",
-      opacity: 0.4,
-      width: 500,
-      height: 340,
-      bottom: -220,
-      zIndex: -5,
-    },
-    greeting: {
-      marginTop: 32,
-      fontSize: 18,
-      fontWeight: "bold",
-      textAlign: "center",
+      marginTop: 70
     },
     errorMessage: {
-      height: 72,
       alignItems: "center",
       justifyContent: "center",
-      marginHorizontal: 30,
+      marginVertical: 30,
     },
     error: {
       color: "#E9446A",
@@ -126,20 +118,8 @@ export default function Login() {
       textAlign: "center",
     },
     form: {
-      marginBottom: 40,
+      marginBottom: 0,
       marginHorizontal: 30,
-    },
-    inputTitle: {
-      color: "#000",
-      fontSize: 10,
-      textTransform: "uppercase",
-    },
-    input: {
-      borderBottomColor: "#000",
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      height: 40,
-      fontSize: 15,
-      color: "#161F3D",
     },
     button: {
       marginHorizontal: 30,
@@ -151,13 +131,9 @@ export default function Login() {
     },
     buttonLogin: {
       backgroundColor: "transparent",
-      borderRadius: 4,
-      borderWidth: 1 ,
-      borderColor: "rgba(21,22,48,0.4)",
-      height: 52,
+      height: 42,
       alignItems: "center",
-      justifyContent: "center",
-      marginVertical: 10,
+      marginTop: 20,
       marginHorizontal: 30
     },  
   });

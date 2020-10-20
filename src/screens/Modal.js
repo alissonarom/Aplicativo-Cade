@@ -9,16 +9,17 @@ export default function Modal({ route, navigation }) {
   const { name, bairro, cidade, avatar} = route.params;
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={"#ffd700"}/>
+      <StatusBar barStyle={'dark-content'} backgroundColor={"#ffe700"}/>
       <Header
         containerStyle={{
-          backgroundColor: '#ffd700'
+          backgroundColor: '#ffe700',
+          borderBottomWidth: 0
         }}
         leftComponent={<Button
           type= "clear"
           icon={{
             name: "arrow-back",
-            size: 30,
+            size: 25,
             color: "black",
             
           }}

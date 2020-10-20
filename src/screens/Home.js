@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, StatusBar, Image, FlatList, SafeAreaView } from "react-native";
-import { Header, Icon, SearchBar, Card, ListItem, Avatar, Button } from 'react-native-elements';
+import { View, Text, StyleSheet, StatusBar, Image, FlatList, ScrollView, SafeAreaView } from "react-native";
+import { Header, Icon, SearchBar, Card, ListItem, Avatar, Button, Overlay } from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import 'firebase/firestore';
 import "firebase/auth";
-const firebase = require('firebase');
+import * as firebase from "firebase";
 require('firebase/firestore');
 import moment from 'moment';
 import 'moment/locale/pt-br';
 moment().format();
+import Fire from '../config/Fire';
+
 
 export default function Home() {
   const [search, setSearch] = useState('');
@@ -16,25 +18,35 @@ export default function Home() {
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
   const navigation = useNavigation();
-
-
+  const [visible, setVisible] = useState(false);
+  const toggleOverlay = () => {setVisible(!visible);};
+  const [infos, setInfos] = useState({});
 
   useEffect(() => {
     console.disableYellowBox = true;
     const DataSearch = 
     firebase.firestore().collection("users")
     .onSnapshot(querySnapshot => {
-      const posts = [];
+      const users = [];
       querySnapshot.forEach(documentSnapshot => {
-        posts.push({
+        users.push({
           ...documentSnapshot.data(),
           key: documentSnapshot.id,
         });
       });
       setFilteredDataSource();
-       setMasterDataSource(posts);
+      setMasterDataSource(users);
       setLoading(false);
     });
+    
+    Fire.shared.userInfos
+      .get()
+      .then(function (doc) {
+        setInfos(doc.data());
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
     
   }, []);
 
@@ -55,8 +67,8 @@ export default function Home() {
       // O texto inserido não está em branco
       // Atualizar FilteredDataSource
       const newData = masterDataSource.filter(function (item) {
-        const itemData = item.name
-          ? item.name.toUpperCase()
+        const itemData = item.detalhes
+          ? item.detalhes.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
@@ -93,7 +105,6 @@ export default function Home() {
             <Avatar 
               source={{ uri: item.avatar }} 
               size="large"
-              backgroundColor="#C8C8C8"
            />
             <ListItem.Content>
             <ListItem.Title>{item.name}</ListItem.Title>
@@ -130,49 +141,91 @@ export default function Home() {
       
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={"#ffd700"}/>
+      <StatusBar barStyle={'dark-content'} backgroundColor={"#ffd300"}/>
       <Header
         containerStyle={{
-          backgroundColor: '#ffd700',
+          backgroundColor: '#ffd300',
           justifyContent: 'space-around',
           height: 120 ,
+          borderBottomWidth: 0,
+          marginTop: 20
         }}
-          leftComponent={<Button
-            icon={{
-              name: "menu",
-              size: 30,
-              color: "black",
-              
-            }}
-            onPress={() => navigation.toggleDrawer()}
-          />}
           centerComponent={<Logomarca/>}
-          
       />
+      <ScrollView>
       <View style={styles.topHome}>
-          <Text style={styles.topHomeText}>
-              Busque ou anuncie serviços{"\n"}para Londrina e região
-          </Text>
-        </View>
-        
-      <SearchBar
+        <SearchBar
           platform="android"
-          containerStyle={{backgroundColor:"#ffe700", color: "black", paddingHorizontal: 10}}
-          searchIcon={{color:"black"}}
-          cancelIcon={{color:"black"}}
+          containerStyle={{
+            marginHorizontal: 40,
+            marginVertical: 5,
+            backgroundColor: "white",
+            alignSelf: "center",
+            height: 45
+          }}
+          inputContainerStyle={{
+            top: -8
+          }}
+          searchIcon={{
+            color: "black",
+          }}
+          cancelIcon={false}
           onChangeText={(text) => searchFilterFunction(text)}
           onClear={(text) => searchFilterFunction('')}
-          placeholder="Buscar..."
-          placeholderTextColor="black"
-          underlineColorAndroid="black"
+          placeholder="Pesquise um serviço"
+          placeholderTextColor="grey"
           value={search}
         />
+        <SearchBar
+          platform="android"
+          containerStyle={{
+            marginHorizontal: 40,
+            marginVertical: 5,
+            backgroundColor: "white",
+            alignSelf: "center",
+            height: 45
+          }}
+          inputContainerStyle={{
+            top: -8
+          }}
+          searchIcon={false}
+          cancelIcon={false}
+          onClear={(text) => searchFilterFunction('')}
+          placeholder="Filtre por Cidade"
+          placeholderTextColor="grey"
+        />
+        <SearchBar
+          platform="android"
+          containerStyle={{
+            marginHorizontal: 40,
+            marginVertical: 5,
+            backgroundColor: "white",
+            alignSelf: "center",
+            height: 45
+          }}
+          inputContainerStyle={{
+            top: -8
+          }}
+          searchIcon={false}
+          cancelIcon={false}
+          onClear={(text) => searchFilterFunction('')}
+          placeholder="Filtre por Bairro"
+          placeholderTextColor="grey"
+        />
+        <Button  
+        title= "Buscar"
+        titleStyle={{color: "#fff", fontSize: 20}}
+        containerStyle={{marginHorizontal: 50, marginVertical: 10, borderColor: "white", borderWidth: 2}}
+        type="clear"
+        />
+        </View>
         <FlatList
-          data={filteredDataSource}
           keyExtractor={(item, index) => index.toString()}
+          data={filteredDataSource}
           ItemSeparatorComponent={ItemSeparatorView}
           renderItem={ItemView}
         />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -181,12 +234,22 @@ const styles = StyleSheet.create({
   container:{
     flex: 1
   },
+  button: {
+    marginHorizontal: 30,
+    backgroundColor: "#000000",
+    borderRadius: 4,
+    height: 52,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%"
+  },
   image: {
-    width: 110,
-    height: 60
+    marginVertical:20,
+    width: 140,
+    height: 80
   },
   topHome: {
-    backgroundColor: "#ffe700"
+    backgroundColor: "#ffd300",
   },
   topHomeText: {
     textAlign: "center",

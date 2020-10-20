@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { AntDesign } from '@expo/vector-icons';
 import { View, SafeAreaView, StatusBar, Text} from "react-native";
 import { Header, Icon, Button, Avatar } from 'react-native-elements';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import * as firebase from "firebase";
+
 
 import Fire from './src/config/Fire';
 import 'firebase/firestore';
@@ -20,7 +21,6 @@ import Modal from "./src/screens/Modal"
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-const Drawer = createDrawerNavigator();
 
 function AppTab() {
   return (
@@ -85,64 +85,18 @@ function AuthStack() {
   );
 }
 
-function CustomDrawerContent() {
-  const [infos, setInfos] = useState({});
-
-  useEffect(() => {
-    console.disableYellowBox = true;
-
-    Fire.shared.userInfos
-      .get()
-      .then(function (doc) {
-        setInfos(doc.data());
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
-
-  }, []);
-  return (
-    <SafeAreaView style={{
-      flexDirection:"row",
-      backgroundColor: "#ffe700",
-      width: "100%",
-      alignItems:"center",
-      paddingTop: 40,
-      paddingVertical:10,
-      paddingHorizontal: 10,
-      paddingBottom: 10
-    }}>
-        <StatusBar barStyle={'dark-content'} backgroundColor={"#ffd300"}/>
-        <Avatar 
-          rounded
-          source={{ uri: infos.avatar }} 
-          size="large"
-          backgroundColor="#C8C8C8"
-        />
-        <View style={{ alignItems:"center", padding:5 }}>
-          <Text style={{ fontSize: 15, marginTop: 0 }}>{infos.name}</Text>
-          <Text style={{ fontSize: 15, marginTop: 0 }}>{infos.email}</Text>
-        </View>
-      </SafeAreaView>
-  );
-}
-function MyDrawer() {
-  return (
-    <Drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen name="Home" component={AppTab} />
-      <Drawer.Screen name="AuthStack" component={AuthStack} />
-      <Drawer.Screen name="Loading" component={Loading} />
-      <Drawer.Screen name="Modal" component={Modal} />
-    </Drawer.Navigator>
-  );
-}
-
 export default function App() {
 
   return (
-      <NavigationContainer>
-        <MyDrawer />
-      </NavigationContainer>
+    <NavigationContainer>
+    <Stack.Navigator headerMode="none" mode="modal">
+      <Stack.Screen name="loading" component={Loading} />
+      <Stack.Screen name="AuthStack" component={AuthStack} />
+      <Stack.Screen name="AppTab" component={AppTab} />
+      <Stack.Screen name="Modal" component={Modal} />
+
+    </Stack.Navigator>
+  </NavigationContainer>
     
   );
 }
