@@ -1,12 +1,16 @@
 
-import React from 'react';
-import { NavigationContainer } from "@react-navigation/native";
-import { Text, View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, SafeAreaView, StatusBar,  } from 'react-native';
 import { Header, Icon, Button, Avatar } from 'react-native-elements';
-
+import * as firebase from "firebase";
+import Fire from '../config/Fire';
+//import 'firebase/firestore';
 
 export default function Modal({ route, navigation }) {
-  const { name, bairro, cidade, avatar} = route.params;
+  const { empresa, bairro, cidade, avatar, estado, detalhes} = route.params;
+  const [postServices, setPostServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'dark-content'} backgroundColor={"#ffe700"}/>
@@ -25,7 +29,7 @@ export default function Modal({ route, navigation }) {
           }}
           onPress={() => navigation.goBack()}
         />}
-        centerComponent={{ text: 'Detalhes do Perfil', style: { color: 'black', fontSize: 20}}}
+        centerComponent={{ text: 'Detalhes do Prestador', style: { color: 'black', fontSize: 20}}}
       />
       <View style={{backgroundColor: "#ffe700", width: "100%", alignItems:"center"}}>
         <Avatar 
@@ -38,14 +42,26 @@ export default function Modal({ route, navigation }) {
           backgroundColor="#C8C8C8"
         />
       </View>
-      <Text style={{ fontSize: 30, marginTop: 30 }}>{name}</Text>
-      <View style={{flexDirection: "row", paddingTop: 10}}>
+      <Text style={{ fontSize: 30, marginTop: 30 }}>{empresa}</Text>
+      <View style={{flexDirection: "row", paddingBottom: 10}}>
         <Icon
           name='location-on'
           type='material'
           color='#C8C8C8'
+          size= {20}
         />
-        <Text style={{color: "#9e9e9e"}}>{bairro}{' - '}{cidade}</Text>
+        <Text style={{color: "#9e9e9e"}}>{bairro}{' - '}{cidade}{' - '}{estado}</Text>
+      </View>
+      <View style={styles.cardPerfil}>
+        <View style={{flexDirection: "row", alignItems: "center"}}>
+          <Icon
+              name="domain"
+              size={25}
+              color="black"
+            />
+          <Text style={styles.titleDetalhes}>Serviços Oferecidos</Text>
+        </View>
+        <Text style={{color: "#6d6d6d", textAlign: "left", fontSize: 17, marginLeft: 35}}>{detalhes}</Text>
       </View>
     </SafeAreaView>
   );
@@ -55,6 +71,19 @@ const styles = StyleSheet.create({
   container:{
     flex: 1,
     alignItems: 'center'
+  },
+  cardPerfil: {
+    alignItems: "flex-start",
+    backgroundColor: "white",
+    marginHorizontal: 10,
+    marginBottom: 5,
+    borderRadius: 3,
+    width: "95%",
+    padding: 20
+  },
+  titleDetalhes:{
+    fontWeight: "bold",
+    marginStart: 10
   },
 
 });

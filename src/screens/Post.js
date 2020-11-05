@@ -1,13 +1,14 @@
 
 import React, { useState, useEffect } from "react";
+import * as firebase from "firebase";
+import "firebase/firestore";
+import Fire from '../config/Fire'
 import { useNavigation } from "@react-navigation/native";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
-import { AntDesign } from '@expo/vector-icons';
 import Constants from "expo-constants";
-import "firebase/firestore";
-import Fire from '../config/Fire'
 
+import { Header, Button,Input, Icon } from 'react-native-elements';
 import {
   View,
   Text,
@@ -22,22 +23,12 @@ import {
 
 export default function Post() {
   const [text, setText] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const navigation = useNavigation();
-  const [infos, setInfos] = useState({}); 
-
+  
   useEffect(() => {
     getPhotoPermissions();
-    console.disableYellowBox = true;
-    Fire.shared.userInfos
-      .get()
-      .then(function (doc) {
-        setInfos(doc.data());
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
-
   }, []);
   
   async function getPhotoPermissions() {
@@ -52,7 +43,7 @@ export default function Post() {
 
   async function handlePost () {      
     Fire.shared
-        .addPost({text: text.trim(),  localUri: image, avatar: infos.avatar, autor: infos.name })
+        .addPost({text: text.trim(),  localUri: image, description: description })
         .then(ref => {
           setText("");
           setImage(null);
@@ -78,39 +69,64 @@ export default function Post() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffd700" />
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign name="back" size={32} color="#000000" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePost()}>
-          <Text style={{ fontWeight: "bold" }}>Post</Text>
-        </TouchableOpacity>
-      </View>
+      <StatusBar barStyle="dark-content" backgroundColor="#a38800" />
       <View style={styles.inputContainer}>
-        <Image
-          style={{ height: 50, width: 50, borderRadius: 75 / 2, marginEnd: 30 }}
-          source={{uri: infos.avatar}}
-        />
-        <TextInput
-          autoFocus
-          multiline
-          numberOfLines={4}
-          style={{ flex: 1 }}
-          placeholder="Compartilhe algo?"
-          value={text}
-          onChangeText={setText}
-        />
+        <View style={styles.photoContainer}>
+          <TouchableOpacity style={styles.photo} 
+          onPress={() => pickImage()}
+          >
+            <Icon 
+            type="material"
+            name="photo-camera" 
+            size={45} 
+            scolor="#D8D9D2" />
+            <Text style={styles.textInput}>
+              Incluir uma foto
+            </Text >
+            <Image
+            source={{ uri: image }} fadeDuration={800} style={{ width:"100%", height:260, top: -150, borderRadius: 10}}
+          />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.titlePost}>
+          <Input
+            label= "Título do serviço*"
+            placeholder= "Ex: Consultoria financeira"
+            labelStyle={{
+              color: "black",
+              fontWeight: "bold",
+              fontSize: 16
+            }}
+            inputContainerStyle={{borderBottomColor: "black"}}
+            value={text}
+            onChangeText={setText}
+          />
+          <Input
+            label= "Descrição*"
+            placeholder= "Ex: Detalhes relevantes da Consultoria Financeira"
+            multiline
+            numberOfLines={3}
+            labelStyle={{
+              color: "black",
+              fontWeight: "bold",
+              fontSize: 16
+            }}
+            inputContainerStyle={{borderBottomColor: "black"}}
+            value={description}
+            onChangeText={setDescription}
+          />
+        </View>
       </View>
-
-      <TouchableOpacity style={styles.photo} onPress={() => pickImage()}>
-        <AntDesign name="camerao" size={32} color="#D8D9D2" />
-      </TouchableOpacity>
-
-      <View style={{ marginHorizontal: 32, marginTop: 32, height: 250 }}>
-        <Image
-          source={{ uri: image }} fadeDuration={1000} style={{ width:"100%", height:"100%"}}>
-        </Image>
+      <View>
+        <Button
+          type= "solid"
+          title= "Postar"
+          titleStyle={{color: "black", fontSize: 17, fontWeight: "normal"}}
+          buttonStyle={{
+            backgroundColor: "#ffd300",
+          }}
+          onPress={() => handlePost()}
+        />
       </View>
     </SafeAreaView>
   );
@@ -119,30 +135,31 @@ export default function Post() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  //  paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#D8D9DB",
-    backgroundColor: "#ffd700"
+    backgroundColor: "pink"
+    
   },
   inputContainer: {
-    margin: 32,
-    flexDirection: "row",
-    alignItems: "center"
+    backgroundColor: "white",
+    flex: 1
   },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginRight: 16,
+  photoContainer:{
+    backgroundColor: "#e6e6e6",
+    height: 300,
+    padding: 20
   },
   photo: {
-    alignItems: "flex-end",
-    marginHorizontal: 32,
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "grey",
+    alignItems: "center",
+    paddingTop: 80
   },
+  textInput:{
+    fontWeight: "bold",
+    fontSize: 15
+  },
+  titlePost: {
+    margin: 10
+  }
 });

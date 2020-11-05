@@ -181,5 +181,6 @@ https://expo.io/@alissonarom/cade.
 //    
 //  );
 
+// {moment(item.timestamp).locale('pt-br').fromNow(true)}
 
 

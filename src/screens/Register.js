@@ -21,7 +21,7 @@ import cep from 'cep-promise';
 
 
 export default function Register () {
-  const [name, setName] = useState("");
+  const [empresa, setEmpresa] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
@@ -61,7 +61,7 @@ export default function Register () {
 async function handleSignUp() {
   setLoading(true);
   Fire.shared.createUser({
-  name: name,
+  empresa: empresa,
   email: email,
   password: password,
   avatar: avatar,
@@ -100,7 +100,7 @@ return (
                 label= "CNPJ ou CPF"
                 labelStyle={{
                   fontWeight: "bold",
-                  color: "#696969",
+                  color: "#bbb",
                 }}
                 inputContainerStyle={{
                   borderColor:"#ffd300",
@@ -138,8 +138,8 @@ return (
                 placeholder="Como aparecerá nos anúncios"
                 placeholderTextColor="rgba(0,0,0,0.2)"
                 autoCapitalize="words"
-                value={name}
-                onChangeText={setName}
+                value={empresa}
+                onChangeText={setEmpresa}
               />
             </View>
             <View style={styles.boxCep}>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Icon, Avatar, Button, Input } from 'react-native-elements';
+import { useTheme, TextInput } from 'react-native-paper';
 import * as firebase from "firebase";
 import {
   View,
@@ -9,15 +9,22 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  Platform,
+  KeyboardAvoidingView,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
 
-export default function Login() {
+export default function Login(props) {
+    const { colors } = useTheme();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [passBool, setPassBool] = useState(true);
+    const [passColor, setPassColor] = useState("#bdbdbd");
+    const [passIcon, setPassIcon] = useState("visibility-off");
+
     const navigation = useNavigation();
   
   
@@ -28,48 +35,81 @@ export default function Login() {
         .signInWithEmailAndPassword(email, password)
         .then(function () {
           setLoading(false);
-          navigation("AppTab", { screen: "home" });
+          navigation.navigate("Home");
         })
         .catch((err) => {
           setLoading(false);
           setError(err.message);
         });
     }
+
+    function toggleIconPass() {
+        if (passBool === false) {
+          setPassColor("#bdbdbd");
+          setPassIcon("visibility-off");
+          setPassBool(true)
+        } else {
+          setPassColor("#00a31c");
+          setPassIcon("visibility");
+          setPassBool(false)
+        }
+      }
   
     return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor="#ffd300" barStyle="dark-content" />
+      <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.select({
+        ios: 'padding',
+        android: null,
+    })}
+      >
+        <StatusBar backgroundColor= {colors.primary} barStyle="dark-content" />
         <Image source={require('../../assets/icone.neo.png')} style={styles.image} />
-        <View style={{ width: "100%" }}>
+        <View style={{ width: "100%"}}>
           <View style={styles.errorMessage}>
             {error && <Text style={styles.error}>Email ou senha inválidos</Text>}
           </View>
-  
           <View style={styles.form}>
-            <View>
-              <Input
-                inputContainerStyle={{
-                  borderColor:"black"
-                }}
-                leftIcon={{ type: 'material', name: 'email', marginHorizontal: 10 }}
-                placeholder="Email"
-                placeholderTextColor="black"
+          <View style={styles.inputLogin}>
+              <TextInput
+                
+               
+               
+                label= "Email"
+                icon="camera"
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
-                errorStyle={{ color: 'red' }}
               />
             </View>
-  
-            <View >
-              <Input
+            <View style={styles.inputLogin}>
+              <TextInput
                 inputContainerStyle={{
-                  borderColor:"black"
+                  backgroundColor: colors.accent,
+                  borderRadius: 5,
+                  borderBottomWidth: 0,
+                  paddingVertical: 5
                 }}
-                leftIcon={{ type: 'material', name: 'vpn-key', marginHorizontal: 10  }}
-                secureTextEntry={true}
-                placeholder="Senha"
-                placeholderTextColor="black"
+                leftIcon={{ type: 'material', name: 'vpn-key', marginHorizontal: 10, color: "#ffd300"  }}
+                rightIcon={
+                  <Icon
+                    iconStyle={{
+                      marginHorizontal: 5
+                    }}
+                    name={passIcon}
+                    color={passColor}
+                    onPress={() => toggleIconPass()}
+                  />
+                }
+                label= "Senha"
+                labelStyle={{
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+                inputStyle={{
+                  fontSize: 18,
+                }}
+                secureTextEntry={passBool}
                 autoCapitalize="none"
                 value={password}
                 onChangeText={setPassword}
@@ -79,27 +119,27 @@ export default function Login() {
   
           <TouchableOpacity onPress={() => handleLogin()} style={styles.button}>
             {loading ? (
-              <ActivityIndicator size="small" color="#FFd300" />
+              <ActivityIndicator size="small" color="white" />
             ) : (
-              <Text style={{ color: "#FFF", fontWeight: "500", fontSize: 16 }}>Entrar</Text>
+              <Text style={{ color: colors.primary, fontWeight: "500", fontSize: 16 }}>Entrar</Text>
             )}
           </TouchableOpacity>
   
-          <TouchableOpacity style={styles.buttonLogin} onPress={() => navigation.navigate("register")}>
-            <Text style={{ color: "#000", fontSize: 16 }}>
+          <TouchableOpacity style={styles.buttonLogin} onPress={() => navigation.navigate("Register")}>
+            <Text style={{ color: "#ffd300", fontSize: 16 }}>
               Cadastrar
             </Text>
           </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+          </View>
+        </KeyboardAvoidingView>
     );
   }
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
+      paddingBottom: 30,
       alignItems: "center",
-      backgroundColor: "#ffd300"
     },
     image: {
       width: 250,
@@ -118,19 +158,22 @@ export default function Login() {
       textAlign: "center",
     },
     form: {
-      marginBottom: 0,
-      marginHorizontal: 30,
+      marginHorizontal: 20,
+    },
+    inputLogin: {
+      height: 90
     },
     button: {
-      marginHorizontal: 30,
-      backgroundColor: "#000000",
-      borderRadius: 4,
+      marginHorizontal: 100,
+      marginTop: 20,
+      borderRadius: 5,
       height: 52,
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 2,
+      borderColor: "white"
     },
     buttonLogin: {
-      backgroundColor: "transparent",
       height: 42,
       alignItems: "center",
       marginTop: 20,

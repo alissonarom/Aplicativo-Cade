@@ -18,20 +18,20 @@ class Fire{
      firebase.initializeApp(firebaseConfig);
    }
   }
-  
-  addPost = async ({ text, localUri, avatar, autor}) => {
+
+  addPost = async ({ text, localUri, description, autor}) => {    
     const remoteUri =  await this.uploadPhotoAsync(localUri, `photos/${this.uid}/${Date.now()}`)
           return new Promise((res, rej) => {
           this.firestore
-            .collection("posts")
+            .collection("posts/" + this.uid + "/userPosts")
             .add({
                   text,
                   uid: this.uid,
                   timestamp: this.timestamp,
                   image: remoteUri,
-                  avatar,
+                  description,
                   autor
-
+                  
           })
           .then(ref => {
             res(ref)
@@ -66,7 +66,7 @@ class Fire{
     });
   };
 
-  createUser = async ({name, email, password, avatar, detalhes, cnpjcpf, infoCep }) => {
+  createUser = async ({empresa, email, password, avatar, detalhes, cnpjcpf, infoCep }) => {
     let remoteUri = null
 
     try {
@@ -75,7 +75,7 @@ class Fire{
       let db = this.firestore.collection("users").doc(this.uid);
 
       db.set({
-        empresa: name,
+        empresa: empresa,
         email: email,
         avatar: avatar,
         detalhes: detalhes,
@@ -104,13 +104,14 @@ class Fire{
   get firestore() {
     return firebase.firestore();
   }
-
-  get userInfos() {
-    return firebase.firestore().collection("users").doc(this.uid);
-  }
+  
 
   get uid() {
     return (firebase.auth().currentUser || {}).uid;
+  }
+
+  get userInfos() {
+    return firebase.firestore().collection("users").doc(this.uid);
   }
 
   get timestamp() {

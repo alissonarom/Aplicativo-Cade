@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
     "@react-native-community/masked-view": "0.1.6",
     "@react-navigation/bottom-tabs": "^5.5.1",
     "@react-navigation/drawer": "^5.9.3",
@@ -31,7 +32,8 @@
     "react-native-safe-area-context": "0.7.3",
     "react-native-screens": "~2.2.0",
     "react-native-web": "~0.11.7",
-    "uuid": "^8.2.0"
+    "uuid": "^8.2.0",
+    "expo-ads-admob": "~8.1.0"
   },
   "devDependencies": {
     "babel-preset-expo": "~8.1.0",

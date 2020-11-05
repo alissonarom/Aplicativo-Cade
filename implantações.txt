@@ -1,0 +1,47 @@
+IMPLANTAÇÕES DA BUILD =
+    [
+     --27,5% >>> (sex 23/10)
+     --20,8% >> (seg 26/10)
+     -18,7% >> (sex 30/10) 
+    ]
+
+- PESQUISA = 100%
+            - ativar filtros cidade\bairro = 80% (GitHub Issue) 100%
+            - layout de pesquisa (SearchBar Animation) = 100%
+
+- PERFIL = 36,6%
+    - adicionar função editar = 30% 
+            -- adicionar função Postar (*activityIndicator + video(+ gravar video) + tirar foto ) = 90%
+            -- dados de contato (redes sociais, whatsapp, email) = 0%
+
+- CEP = 0%
+            - autocompletar traço separador = 0%
+
+- ROTAS = 30%
+    - criar rotas (permissões de rotas) = 30%
+
+-- FUNÇÕES = 0% pronto
+            - like = 0%
+            - avaliar = 0%
+
+-- ADMOB = 50% (ID: ca-app-pub-1290340583370761~8158489211)
+
+-- LAYOUT GERAL = 15% *(alterar biblioteca para Material UI)
+            - padronizar tema = 80%
+            - usar headers do RN = 100%
+    
+-- LOGOMARCA = 33%
+            - definir AppIcon = 0%
+            - definir amarelo C@dê = 100%
+            - definir logo = 0%
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WIREFRAME - CORES E FONTS
+
+COR PRIMEIRA - #FFD300 (AMARELO C@DÊ)
+COR SEGUNDA - #FFFFFF (BRANCO)
+COR TERCEIRA - #BBBBBB (CINZA CLARO)
+COR QUARTA - #777777 (CINZA MEDIO)
+COR QUINTA - #555555 (CINZA ESCURO)
+COR SEXTA - #000000 (PRETO)
+

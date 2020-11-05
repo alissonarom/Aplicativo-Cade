@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, StatusBar, Image, FlatList, ScrollView, SafeAreaView } from "react-native";
-import { Header, Icon, SearchBar, Card, ListItem, Avatar, Button, Overlay } from 'react-native-elements';
+import { View, Text, StyleSheet, StatusBar, Image, FlatList, ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
+import { Icon,  ListItem, Avatar } from 'react-native-elements';
+import { Searchbar, TextInput, useTheme } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import Faab from '../components/Faab'
 import 'firebase/firestore';
 import "firebase/auth";
 import * as firebase from "firebase";
@@ -9,18 +11,17 @@ require('firebase/firestore');
 import moment from 'moment';
 import 'moment/locale/pt-br';
 moment().format();
-import Fire from '../config/Fire';
-
 
 export default function Home() {
   const [search, setSearch] = useState('');
+  const [searchBairro, setSearchBairro] = useState('');
   const [loading, setLoading] = useState(true);
   const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [newFilteredDataSource, setNewFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
   const navigation = useNavigation();
-  const [visible, setVisible] = useState(false);
-  const toggleOverlay = () => {setVisible(!visible);};
-  const [infos, setInfos] = useState({});
+  const { colors } = useTheme();
+  const [enable, setEnable] = useState(true)
 
   useEffect(() => {
     console.disableYellowBox = true;
@@ -39,23 +40,13 @@ export default function Home() {
       setLoading(false);
     });
     
-    Fire.shared.userInfos
-      .get()
-      .then(function (doc) {
-        setInfos(doc.data());
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
-    
   }, []);
 
   const Logomarca = () => {
     return(
-      <View>
-        <Image
-            source={require('../../assets/icone.neo.png')}
-            style={styles.image}
+      <View style={{backgroundColor: colors.primary, alignItems: "center"}}>
+        <Image style={styles.image}
+          source={require('../../assets/icone.neo.png')}
           />
       </View>
     );
@@ -64,50 +55,102 @@ export default function Home() {
   const searchFilterFunction = (text) => {
     //Verifique se o texto pesquisado não está em branco
     if (text) {
+      setEnable(false)
       // O texto inserido não está em branco
       // Atualizar FilteredDataSource
       const newData = masterDataSource.filter(function (item) {
-        const itemData = item.detalhes
+        const itemData =item.detalhes
           ? item.detalhes.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
       setFilteredDataSource(newData);
+      setNewFilteredDataSource(newData);
       setSearch(text);
+    }  else {
+      // O texto inserido está em branco
+      // Atualize FilteredDataSource com masterDataSource
+      setFilteredDataSource('');
+      setSearch(text);
+      setEnable(true)
+  }};
+
+//  filtro por CIDADE
+//   const newSearchFilterFunctionCity = (text, cidade) => {
+//    //Verifique se o texto pesquisado não está em branco
+//    if (text, cidade) {
+//      // O texto inserido não está em branco
+//      // Atualizar FilteredDataSource
+//      const newDataFilterCity = filteredDataSource.filter(function (item) {
+//        const itemData = item.cidade
+//          ? item.cidade.toUpperCase()
+//          : ''.toUpperCase();
+//        const newTextData = cidade.toUpperCase();
+//        return itemData.indexOf(newTextData) > 3;
+//      });
+//      setFilteredDataSource(newDataFilterCity);
+//      setSearchCidade(cidade);
+//    } else {
+//      // O texto inserido está em branco
+//      // Atualize FilteredDataSource com masterDataSource
+//      setFilteredDataSource(newFilteredDataSource);
+//      setSearchCidade(cidade);
+//    }
+//  };
+    
+
+//  filtro por BAIRRO
+    const newSearchFilterFunction = (bairro) => {
+    //Verifique se o texto pesquisado não está em branco
+    if (bairro) {
+      // O texto inserido não está em branco
+      // Atualizar FilteredDataSource
+      const newDataFilter = filteredDataSource.filter(function (item) {
+        const itemData = item.bairro
+          ? item.bairro.toUpperCase()
+          : ''.toUpperCase();
+        const newTextData = bairro.toUpperCase();
+        return itemData.indexOf(newTextData) > -1;
+      });
+      setFilteredDataSource(newDataFilter);
+      setSearchBairro(bairro);
     } else {
       // O texto inserido está em branco
       // Atualize FilteredDataSource com masterDataSource
-      setFilteredDataSource();
-      setSearch(text);
+      setFilteredDataSource(newFilteredDataSource);
+      setSearchBairro(bairro);
     }
   };
 
   const ItemView = ({item}) => {
     return (
       // Flat List Item
-      <View >
-        <Card
-          containerStyle={{padding: 0, margin: 7}}
+    <View style={{backgroundColor: "white", marginVertical: 3, marginHorizontal: 10, padding: 0, borderRadius: 10}}>
+        <View
+          containerStyle={{alignItems: "center"}}
          >
         {
           <ListItem 
             key={item.uid} 
-            containerStyle={{maxWidth: 400, padding:0, flexDirection:"row"}}
+            containerStyle={{flexDirection:"row", padding: 0, borderRadius: 10}}
             onPress={() => navigation.navigate('Modal', {
-              name: item.name,
+              empresa: item.empresa,
               bairro: item.bairro,
               cidade: item.cidade,
               avatar: item.avatar,
+              detalhes: item.detalhes,
+              estado: item.estado
             })}
-
           >
             <Avatar 
               source={{ uri: item.avatar }} 
               size="large"
            />
-            <ListItem.Content>
-            <ListItem.Title>{item.name}</ListItem.Title>
+            <ListItem.Content
+              containerStyle={{}}
+            >
+            <ListItem.Title>{item.empresa}</ListItem.Title>
               <View style={{flexDirection: "row", paddingTop: 10}}>
                 <Icon
                   name='location-on'
@@ -118,114 +161,53 @@ export default function Home() {
               </View>
             </ListItem.Content>
           </ListItem>
-          
         }
-        
-        </Card>
+        </View>
       </View>
-    );
-  };
-
-  const ItemSeparatorView = () => {
-    return (
-      // Flat List Item Separator
-      <View
-        style={{
-          height: 0.5,
-          width: '100%',
-          backgroundColor: '#C8C8C8',
-        }}
-      />
     );
   };
       
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={"#ffd300"}/>
-      <Header
-        containerStyle={{
-          backgroundColor: '#ffd300',
-          justifyContent: 'space-around',
-          height: 120 ,
-          borderBottomWidth: 0,
-          marginTop: 20
-        }}
-          centerComponent={<Logomarca/>}
-      />
+      <StatusBar barStyle={'dark-content'} backgroundColor={colors.primary} />
+      <Logomarca/>
       <ScrollView>
       <View style={styles.topHome}>
-        <SearchBar
+        <Searchbar
           platform="android"
-          containerStyle={{
-            marginHorizontal: 40,
-            marginVertical: 5,
-            backgroundColor: "white",
-            alignSelf: "center",
-            height: 45
-          }}
-          inputContainerStyle={{
-            top: -8
-          }}
-          searchIcon={{
-            color: "black",
-          }}
-          cancelIcon={false}
           onChangeText={(text) => searchFilterFunction(text)}
-          onClear={(text) => searchFilterFunction('')}
-          placeholder="Pesquise um serviço"
-          placeholderTextColor="grey"
+          onClear={() => searchFilterFunction('')}
+          placeholder="Cadê?"
+          placeholderTextColor= "grey"
           value={search}
-        />
-        <SearchBar
-          platform="android"
-          containerStyle={{
-            marginHorizontal: 40,
-            marginVertical: 5,
-            backgroundColor: "white",
-            alignSelf: "center",
-            height: 45
+          style={{
+            marginHorizontal: 20
           }}
-          inputContainerStyle={{
-            top: -8
-          }}
-          searchIcon={false}
-          cancelIcon={false}
-          onClear={(text) => searchFilterFunction('')}
-          placeholder="Filtre por Cidade"
-          placeholderTextColor="grey"
         />
-        <SearchBar
-          platform="android"
-          containerStyle={{
-            marginHorizontal: 40,
-            marginVertical: 5,
-            backgroundColor: "white",
-            alignSelf: "center",
-            height: 45
-          }}
-          inputContainerStyle={{
-            top: -8
-          }}
-          searchIcon={false}
-          cancelIcon={false}
-          onClear={(text) => searchFilterFunction('')}
-          placeholder="Filtre por Bairro"
-          placeholderTextColor="grey"
-        />
-        <Button  
-        title= "Buscar"
-        titleStyle={{color: "#fff", fontSize: 20}}
-        containerStyle={{marginHorizontal: 50, marginVertical: 10, borderColor: "white", borderWidth: 2}}
-        type="clear"
-        />
+        <View style={styles.filtersInput}>
+          <TextInput
+            mode="flat"
+            placeholder= "Filtre por Bairro"
+            style={{
+              flex: 1,
+              backgroundColor: colors.accent,
+              height: 50,
+            }}
+            autoCapitalize="none"
+            onChangeText={(bairro) => newSearchFilterFunction(bairro)}
+            onClear={() => newSearchFilterFunction('')}
+            value={searchBairro}
+            disabled={enable}
+          />
         </View>
+      </View>
         <FlatList
           keyExtractor={(item, index) => index.toString()}
           data={filteredDataSource}
-          ItemSeparatorComponent={ItemSeparatorView}
           renderItem={ItemView}
         />
       </ScrollView>
+      <Faab/>
     </SafeAreaView>
   );
 }
@@ -234,44 +216,23 @@ const styles = StyleSheet.create({
   container:{
     flex: 1
   },
-  button: {
-    marginHorizontal: 30,
-    backgroundColor: "#000000",
-    borderRadius: 4,
-    height: 52,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "80%"
-  },
   image: {
-    marginVertical:20,
-    width: 140,
-    height: 80
+    marginVertical:10,
+    width: 90,
+    height: 50,
   },
   topHome: {
-    backgroundColor: "#ffd300",
+    paddingVertical: 10
   },
-  topHomeText: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 23,
-    margin: 30,
-    fontWeight: "bold"
+  filtersInput: {
+    flex: 1,
+    marginHorizontal: 20,
+    marginVertical: 5,
   },
-    centeredView: {
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 22
-    },
-    openButton: {
-      backgroundColor: "#F194FF",
-      borderRadius: 20,
-      padding: 10,
-      elevation: 2
-    },
-    textStyle: {
-      color: "white",
-      fontWeight: "bold",
-      textAlign: "center"
-    },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  }
 });
