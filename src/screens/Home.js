@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, StatusBar, Image, FlatList, ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
-import { Icon,  ListItem, Avatar } from 'react-native-elements';
-import { Searchbar, TextInput, useTheme } from 'react-native-paper';
+import { View, StyleSheet, StatusBar, Image, FlatList, ScrollView, SafeAreaView} from "react-native";
+import { Searchbar, TextInput, useTheme, Button, Avatar, Card, IconButton } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-import Faab from '../components/Faab'
+import FabHome from '../components/FabHome'
 import 'firebase/firestore';
 import "firebase/auth";
 import * as firebase from "firebase";
@@ -44,7 +43,7 @@ export default function Home() {
 
   const Logomarca = () => {
     return(
-      <View style={{backgroundColor: colors.primary, alignItems: "center"}}>
+      <View style={{ alignItems: "center", paddingVertical: 10, backgroundColor: colors.primary}}>
         <Image style={styles.image}
           source={require('../../assets/icone.neo.png')}
           />
@@ -125,51 +124,61 @@ export default function Home() {
 
   const ItemView = ({item}) => {
     return (
-      // Flat List Item
-    <View style={{backgroundColor: "white", marginVertical: 3, marginHorizontal: 10, padding: 0, borderRadius: 10}}>
-        <View
-          containerStyle={{alignItems: "center"}}
-         >
-        {
-          <ListItem 
-            key={item.uid} 
-            containerStyle={{flexDirection:"row", padding: 0, borderRadius: 10}}
-            onPress={() => navigation.navigate('Modal', {
-              empresa: item.empresa,
-              bairro: item.bairro,
-              cidade: item.cidade,
-              avatar: item.avatar,
-              detalhes: item.detalhes,
-              estado: item.estado
-            })}
-          >
-            <Avatar 
-              source={{ uri: item.avatar }} 
-              size="large"
-           />
-            <ListItem.Content
-              containerStyle={{}}
-            >
-            <ListItem.Title>{item.empresa}</ListItem.Title>
-              <View style={{flexDirection: "row", paddingTop: 10}}>
-                <Icon
-                  name='location-on'
-                  type='material'
-                  color='#C8C8C8'
-                />
-                <Text style={{color: "#9e9e9e"}}>{item.bairro}{' - '}{item.cidade}</Text>
-              </View>
-            </ListItem.Content>
-          </ListItem>
-        }
-        </View>
-      </View>
+      <Card.Title
+        style={{height: 100, borderRadius: 10, margin: 10, backgroundColor: colors.accent, padding: 0}}
+        title={item.empresa}
+        subtitle={item.detalhes}
+        subtitleStyle={{maxWidth: 300, backgroundColor: "red"}}
+        left={() => <Avatar.Image 
+              size={85}
+              source={item.avatar}
+              style={{
+                marginVertical: 5,
+                marginHorizontal: -10
+              }}
+            />}
+        right={(props) => <IconButton {...props} icon="more-vert" onPress={() => {}} />}
+      />
+      //<View
+      //  style={{flexDirection: "row"}}
+      //  onPress={() => navigation.navigate('Modal', {
+      //    empresa: item.empresa,
+      //    bairro: item.bairro,
+      //    cidade: item.cidade,
+      //    avatar: item.avatar,
+      //    detalhes: item.detalhes,
+      //    estado: item.estado
+      //  })}
+      //>
+      //  <Avatar.Image 
+      //    size={100}
+      //    source={item.avatar}
+      //    style={{
+      //      marginVertical: 5,
+      //      marginHorizontal: 10
+      //    }}
+      //  />
+      //  <View>
+      //    <Text>{item.empresa}</Text>
+      //    <Text>{item.detalhes}</Text>
+      //    <View style={{flexDirection: "row"}}>
+      //    <Button icon="star" style={{backgroundColor: "red"}}>
+      //      4.3
+      //    </Button>
+      //    <Button icon="map-marker" style={{backgroundColor: "red"}}>
+      //      {item.bairro}{'-'}{item.cidade}
+      //    </Button>
+      //    </View> 
+      //  </View>  
+      //  <View></View>
+      //  <View></View> 
+      //</View>        
     );
-  };
-      
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={colors.primary} />
+      <StatusBar barStyle="dark-content" backgroundColor="#ffd300" />
       <Logomarca/>
       <ScrollView>
       <View style={styles.topHome}>
@@ -187,12 +196,18 @@ export default function Home() {
         <View style={styles.filtersInput}>
           <TextInput
             mode="flat"
+            placeholder= "Filtre por Cidade"
+            style={styles.inputSearch}
+            autoCapitalize="none"
+            onChangeText={(bairro) => newSearchFilterFunction(bairro)}
+            onClear={() => newSearchFilterFunction('')}
+            value={searchBairro}
+            disabled={enable}
+          />
+          <TextInput
+            mode="flat"
             placeholder= "Filtre por Bairro"
-            style={{
-              flex: 1,
-              backgroundColor: colors.accent,
-              height: 50,
-            }}
+            style={styles.inputSearch}
             autoCapitalize="none"
             onChangeText={(bairro) => newSearchFilterFunction(bairro)}
             onClear={() => newSearchFilterFunction('')}
@@ -200,6 +215,9 @@ export default function Home() {
             disabled={enable}
           />
         </View>
+        <Button mode="contained" style={{ borderWidth: 1, borderColor: colors.accent, marginHorizontal: 20, marginTop: 20}} labelStyle={{color: colors.accent}} onPress={ () => navigation.navigate("Register")}>
+          CADASTRE-SE E ANUNCIE
+        </Button>
       </View>
         <FlatList
           keyExtractor={(item, index) => index.toString()}
@@ -207,27 +225,36 @@ export default function Home() {
           renderItem={ItemView}
         />
       </ScrollView>
-      <Faab/>
+      <FabHome/>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container:{
-    flex: 1
+    flex: 1,
+    alignContent: "center"
   },
   image: {
     marginVertical:10,
-    width: 90,
-    height: 50,
+    width: 100,
+    height: 60,
   },
   topHome: {
-    paddingVertical: 10
+    paddingVertical: 5,
+    backgroundColor: "#ffd300"
   },
   filtersInput: {
     flex: 1,
+    flexDirection:"row" ,
     marginHorizontal: 20,
     marginVertical: 5,
+  },
+  inputSearch: {
+    flex: 1,
+    backgroundColor: "#fff",
+    height: 50,
+    margin: 3
   },
   fab: {
     position: 'absolute',

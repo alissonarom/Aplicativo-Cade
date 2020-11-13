@@ -7,8 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
-
-import { Header, Button,Input, Icon } from 'react-native-elements';
+import { TextInput, IconButton, useTheme } from "react-native-paper";
 import {
   View,
   Text,
@@ -16,16 +15,18 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
-  TextInput,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  ScrollView
 } from "react-native";
 
-export default function Post() {
+export default function Post({ route, navigation }) {
+  const { autor} = route.params;
   const [text, setText] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
-  const navigation = useNavigation();
+  const { colors } = useTheme();
   
   useEffect(() => {
     getPhotoPermissions();
@@ -43,7 +44,7 @@ export default function Post() {
 
   async function handlePost () {      
     Fire.shared
-        .addPost({text: text.trim(),  localUri: image, description: description })
+        .addPost({text: text.trim(),  localUri: image, description: description,autor: autor })
         .then(ref => {
           setText("");
           setImage(null);
@@ -69,97 +70,66 @@ export default function Post() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#a38800" />
-      <View style={styles.inputContainer}>
-        <View style={styles.photoContainer}>
-          <TouchableOpacity style={styles.photo} 
-          onPress={() => pickImage()}
-          >
-            <Icon 
-            type="material"
-            name="photo-camera" 
-            size={45} 
-            scolor="#D8D9D2" />
-            <Text style={styles.textInput}>
-              Incluir uma foto
-            </Text >
-            <Image
-            source={{ uri: image }} fadeDuration={800} style={{ width:"100%", height:260, top: -150, borderRadius: 10}}
-          />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.titlePost}>
-          <Input
-            label= "Título do serviço*"
-            placeholder= "Ex: Consultoria financeira"
-            labelStyle={{
-              color: "black",
-              fontWeight: "bold",
-              fontSize: 16
-            }}
-            inputContainerStyle={{borderBottomColor: "black"}}
-            value={text}
-            onChangeText={setText}
-          />
-          <Input
-            label= "Descrição*"
-            placeholder= "Ex: Detalhes relevantes da Consultoria Financeira"
-            multiline
-            numberOfLines={3}
-            labelStyle={{
-              color: "black",
-              fontWeight: "bold",
-              fontSize: 16
-            }}
-            inputContainerStyle={{borderBottomColor: "black"}}
-            value={description}
-            onChangeText={setDescription}
-          />
-        </View>
-      </View>
-      <View>
-        <Button
-          type= "solid"
-          title= "Postar"
-          titleStyle={{color: "black", fontSize: 17, fontWeight: "normal"}}
-          buttonStyle={{
-            backgroundColor: "#ffd300",
-          }}
-          onPress={() => handlePost()}
+      <StatusBar barStyle="dark-content" backgroundColor={colors.primary} />
+      <ScrollView showsVerticalScrollIndicator={false} style={{marginHorizontal: 20}}>
+      <View style={{flex: 1, paddingHorizontal: 20}}>
+        <TouchableOpacity style={styles.fotoPerfil} onPress= {() => pickImage()}>
+          <Image source={{ uri: image }} fadeDuration={800} style={styles.avatar} />
+          <View style={{ alignItems: "center", paddingTop: 50}}>
+            <IconButton  icon="camera" color={colors.accent} size={40} />
+            <Text style={{ color: colors.accent, fontSize: 16}}>Carregar uma imgem Top</Text>
+          </View>
+        </TouchableOpacity>
+        <TextInput
+          mode="flat"
+          placeholder= "Capricha nos detalhes, cuide os erros e não esqueça a figurinha ; )"
+          multiline
+          numberOfLines={3}
+          style={{marginVertical: 10, backgroundColor: colors.accent}}
+          value={description}
+          onChangeText={setDescription}
         />
       </View>
+        <TouchableOpacity onPress= {()=> handlePost()} style={styles.button}>
+          {loading ? (
+            <ActivityIndicator animating={true} color={colors.accent} />
+          ) : (
+            <Text style={{ color: "white", fontSize: 18,  marginVertical: 15 }}>CONCLUIR</Text>
+          )}
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container:{
     flex: 1,
-    backgroundColor: "pink"
+    backgroundColor: "white"
+  },
+  avatar:{
+    position: "absolute",
+    width: 350,
+    height: 200,
+    borderRadius: 10,
+    zIndex: 2 
+  },
+  button: {
+    height: 60,
+    width: 200,
+    backgroundColor: "#00b009",
+    width: "100%",
+    alignItems:"center",
+    borderRadius: 10,
+
     
   },
-  inputContainer: {
-    backgroundColor: "white",
-    flex: 1
-  },
-  photoContainer:{
-    backgroundColor: "#e6e6e6",
-    height: 300,
-    padding: 20
-  },
-  photo: {
-    flex: 1,
-    borderWidth: 1,
+  fotoPerfil:{
+    backgroundColor: "#ffd24d",
     borderRadius: 10,
-    borderColor: "grey",
-    alignItems: "center",
-    paddingTop: 80
+    alignSelf: "center",
+    width: 350,
+    height: 200,
+    marginVertical: 20
   },
-  textInput:{
-    fontWeight: "bold",
-    fontSize: 15
-  },
-  titlePost: {
-    margin: 10
-  }
 });

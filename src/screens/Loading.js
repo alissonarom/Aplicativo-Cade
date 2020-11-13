@@ -8,14 +8,14 @@ export default function Loading() {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      navigation.navigate(user ? "Home" : "Home");
+      navigation.navigate(user ? "Home" : "Login");
     });
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={{color:"#fff"}}>Carregando App</Text>
-      <ActivityIndicator size="large" color="#000"/>
+      <ActivityIndicator size="large" color="#fff"/>
     </View>
   );
 }

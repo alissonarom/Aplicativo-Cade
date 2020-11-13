@@ -10,12 +10,12 @@ IMPLANTAÇÕES DA BUILD =
             - layout de pesquisa (SearchBar Animation) = 100%
 
 - PERFIL = 36,6%
-    - adicionar função editar = 30% 
+    - adicionar função editar = 50% 
             -- adicionar função Postar (*activityIndicator + video(+ gravar video) + tirar foto ) = 90%
-            -- dados de contato (redes sociais, whatsapp, email) = 0%
+            -- dados de contato (redes sociais, whatsapp, email) = 50%
 
 - CEP = 0%
-            - autocompletar traço separador = 0%
+            - autocompletar traço separador = 50%
 
 - ROTAS = 30%
     - criar rotas (permissões de rotas) = 30%

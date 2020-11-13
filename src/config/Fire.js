@@ -8,9 +8,11 @@ const firebaseConfig  = {
   messagingSenderId: "191813841026",
   appId: "1:191813841026:web:49c9829d5f2c6035a3849b"
 };
+import { useNavigation } from "@react-navigation/native";
 import 'firebase/firestore';
 import 'firebase/storage';
 import "firebase/auth";
+
 
 class Fire{
  constructor() {
@@ -97,7 +99,13 @@ class Fire{
       }
   };
 
-  get singOut() {
+  signOutUser () {
+    const navigation = useNavigation();
+    this.signOut
+    navigation.navigate('Login');
+  };
+
+  get signOut() {
     return firebase.auth().signOut();
   }
 

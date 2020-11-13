@@ -1,9 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, SafeAreaView, StatusBar,  } from 'react-native';
 import { Header, Icon, Button, Avatar } from 'react-native-elements';
-import * as firebase from "firebase";
-import Fire from '../config/Fire';
 //import 'firebase/firestore';
 
 export default function Modal({ route, navigation }) {
