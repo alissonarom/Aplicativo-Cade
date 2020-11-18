@@ -44,7 +44,11 @@ export default function Post({ route, navigation }) {
 
   async function handlePost () {      
     Fire.shared
-        .addPost({text: text.trim(),  localUri: image, description: description,autor: autor })
+        .addPost({
+          text: text.trim(),
+          localUri: image,
+          description: description,
+          autor: autor })
         .then(ref => {
           setText("");
           setImage(null);

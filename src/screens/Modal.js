@@ -1,66 +1,180 @@
 
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, SafeAreaView, StatusBar,  } from 'react-native';
-import { Header, Icon, Button, Avatar } from 'react-native-elements';
-//import 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, SafeAreaView, StatusBar, ActivityIndicator, LayoutAnimation, FlatList } from 'react-native';
+import { useTheme, IconButton, Avatar, Button, Card, Paragraph} from 'react-native-paper';
+import { ScrollView } from "react-native-gesture-handler";
+import * as firebase from "firebase";
+import moment from 'moment';
+import 'moment/locale/pt-br';
+moment().format();
 
 export default function Modal({ route, navigation }) {
-  const { empresa, bairro, cidade, avatar, estado, detalhes} = route.params;
+  const {empresa, bairro, cidade, avatar, estado, detalhes, uid, categoria, avaliação} = route.params;
   const [postServices, setPostServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const { colors } = useTheme();
+
+  useEffect(() => {
+    firebase.firestore().collection("posts/" + uid + "/userPosts")
+    .orderBy('timestamp', 'desc')
+    .onSnapshot(querySnapshot => {
+      const posts = [];
+      querySnapshot.forEach(documentSnapshot => {
+        posts.push({
+          ...documentSnapshot.data(),
+          key: documentSnapshot.id,
+        });
+      });
+      setPosts(posts);
+      setLoading(false);
+    });
+  }, []);
+  LayoutAnimation.easeInEaseOut();
+  if (loading) {
+        return <ActivityIndicator />;
+      }
+
+      const renderItem = ({ item }) => (
+        <Card style={{
+          margin: 10,
+          borderWidth: 0,
+          marginBottom: 15,
+          shadowOpacity: 0.23,
+          shadowRadius: 2.62,
+          elevation: 4,
+        }}>
+          <Card.Title
+            title={item.autor}
+            titleStyle={{fontSize: 17, color: colors.cinzaEscuro}}
+            subtitleStyle={{fontSize: 13, lineHeight: 15 }}
+            subtitleNumberOfLines={2}
+            subtitle={(bairro)+(" - ")+(cidade)}
+            left={(props) => <Avatar.Image {...props} source={{uri: avatar}} style={{marginTop: 20}}/>}
+            right={(props) => <IconButton {...props} icon="check-decagram" size={30} color={colors.cinzaMedio} onPress={() => {}} />}
+          />
+          <Card.Content>
+            <View style={{ flexDirection: "row", alignItems: "center", marginTop: -15, marginLeft: 55}}>
+                <IconButton
+                  icon="clock"
+                  color={colors.cinzaMedio}
+                  size={15}
+                  style={{marginHorizontal: -1}}
+                  />
+                <Text style={{ color: colors.cinzaMedio, fontSize: 12}}>
+                  {moment(item.timestamp).locale('pt-br').fromNow(true)}
+                </Text>
+              </View>
+            <Paragraph>{item.description}</Paragraph>
+          </Card.Content>
+          <Card.Cover source={{ uri: item.image }} style={{height: 300}} />
+          <Card.Actions style={{alignItems: "center"}}>
+            <IconButton
+              icon="checkbox-multiple-marked-circle"
+              color={colors.cinzaMedio}
+              size={25}
+            />
+             <Text style={{ color: colors.cinzaMedio, fontSize: 18}}>
+                  {avaliação}
+                </Text>
+            <IconButton
+              icon="comment-text-multiple"
+              color={colors.cinzaMedio}
+              size={25}
+            />
+                <Text style={{ color: colors.cinzaMedio, fontSize: 18}}>
+                  {avaliação}
+                </Text>
+          </Card.Actions>
+        </Card> 
+    );
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={"#ffe700"}/>
-      <Header
-        containerStyle={{
-          backgroundColor: '#ffe700',
-          borderBottomWidth: 0
-        }}
-        leftComponent={<Button
-          type= "clear"
-          icon={{
-            name: "arrow-back",
-            size: 25,
-            color: "black",
-            
-          }}
-          onPress={() => navigation.goBack()}
-        />}
-        centerComponent={{ text: 'Detalhes do Prestador', style: { color: 'black', fontSize: 20}}}
-      />
-      <View style={{backgroundColor: "#ffe700", width: "100%", alignItems:"center"}}>
-        <Avatar 
-          containerStyle={{
-          top: 30 
-          }}
-          rounded
-          source={{ uri: avatar }} 
-          size="xlarge"
-          backgroundColor="#C8C8C8"
+      <StatusBar barStyle={'dark-content'} backgroundColor={colors.primary}/>
+      <ScrollView>
+      <View style={{backgroundColor: colors.primary, width: "100%", flexDirection: "row", marginBottom: 10}}>
+        <Avatar.Image
+          size={120}
+          source={{uri: avatar}}
+          style={{backgroundColor:colors.cinzaMedio, marginHorizontal: 40, marginVertical: 5}}
         />
-      </View>
-      <Text style={{ fontSize: 30, marginTop: 30 }}>{empresa}</Text>
-      <View style={{flexDirection: "row", paddingBottom: 10}}>
-        <Icon
-          name='location-on'
-          type='material'
-          color='#C8C8C8'
-          size= {20}
-        />
-        <Text style={{color: "#9e9e9e"}}>{bairro}{' - '}{cidade}{' - '}{estado}</Text>
+        <View>
+        <View 
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              margin:10
+            }}
+          >
+            <Text style={{ color: colors.accent, fontSize: 25,}}>{avaliação}</Text>
+            <IconButton
+            icon="star"
+            color={colors.accent}
+            size={30}
+            />
+        </View>
+        <Button mode="contained" onPress={() => console.log('Pressed')}>
+          AVALIE
+        </Button>
+        </View>
+        
       </View>
       <View style={styles.cardPerfil}>
-        <View style={{flexDirection: "row", alignItems: "center"}}>
-          <Icon
-              name="domain"
-              size={25}
-              color="black"
-            />
-          <Text style={styles.titleDetalhes}>Serviços Oferecidos</Text>
-        </View>
-        <Text style={{color: "#6d6d6d", textAlign: "left", fontSize: 17, marginLeft: 35}}>{detalhes}</Text>
+      <Text style={{ fontSize: 30, color: colors.cinzaEscuro }}>{empresa}</Text>
+      <Text style={{ fontSize: 12, color: colors.primary }}>{categoria}</Text>
+      <View style={{flexDirection: "row", alignItems:"center"}}>
+        <IconButton
+          icon="map-marker-outline"
+          size={17}
+          color={colors.cinzaMedio}
+        />
+        <Text style={{color:colors.cinzaMedio}}>{bairro}{' - '}{cidade}{' - '}{estado}</Text>
       </View>
+      <View style={{flexDirection: "row",}}>
+              <IconButton
+                icon="linkedin-box"
+                size={20}
+                color={colors.cinzaMedio}
+              />
+              <IconButton
+                icon="facebook-messenger"
+                size={20}
+                color={colors.cinzaMedio}
+              />
+              <IconButton
+                icon="instagram"
+                size={20}
+                color={colors.cinzaMedio}
+              />
+              <IconButton
+                icon="facebook-box"
+                size={20}
+                color={colors.cinzaMedio}
+              />
+              <IconButton
+                icon="web"
+                size={20}
+                color={colors.cinzaMedio}
+              />
+      </View>
+      </View>
+      <Text style={{margin: 10, marginHorizontal: 20, fontSize: 15, alignSelf: "flex-start"}}>Sobre</Text>
+      <View style={styles.cardPerfil}>
+        <View style={{flexDirection: "row", alignItems: "center"}}>
+          <Text style={{color: colors.cinzaMedio, textAlign: "left", fontSize: 16}}>{detalhes}</Text>
+        </View>
+      </View>
+      <Text style={{margin: 10, marginHorizontal: 20, fontSize: 15, alignSelf: "flex-start"}}>Publicações</Text>
+      <View>
+            <FlatList
+              data={posts}
+              renderItem={renderItem}
+              keyExtractor={(item) => String(item.id)}
+              showsVerticalScrollIndicator={false}
+            />
+      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -71,7 +185,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   cardPerfil: {
-    alignItems: "flex-start",
+    alignItems: "center",
     backgroundColor: "white",
     marginHorizontal: 10,
     marginBottom: 5,
@@ -85,4 +199,3 @@ const styles = StyleSheet.create({
   },
 
 });
- 

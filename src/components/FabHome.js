@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FAB, Portal, Provider, useTheme } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-
+import * as firebase from "firebase";
 
 const FabHome = () => {
   const [state, setState] = React.useState({ open: false });
@@ -10,6 +10,11 @@ const FabHome = () => {
 
   const onStateChange = ({ open }) => setState({ open });
   const { open } = state;
+
+  function singOutUser () {
+    firebase.auth().signOut();
+      navigation.navigate("Login");
+  };
 
   return (
       <Provider>
@@ -23,7 +28,7 @@ const FabHome = () => {
             icon={open ? 'close' : 'menu'}
             actions={[
               { icon: 'account', label: 'Perfil', onPress: () => navigation.navigate("Profile")},
-              { icon: 'plus-circle', label: 'Postar', onPress: () => navigation.navigate("Post") },
+              { icon: 'plus-circle', label: 'Sair', onPress: () => singOutUser()},
             ]}
             onStateChange={onStateChange}
           />

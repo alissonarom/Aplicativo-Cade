@@ -1,47 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IconButton, TextInput, ActivityIndicator, Button, Provider, useTheme, Menu  } from 'react-native-paper';
 import userPermissions from "../utils/UserPermissions";
+import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import Fire from '../config/Fire';
 import cep from 'cep-promise';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 
 
-const FormRegister = () => {
-  const [empresa, setEmpresa] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [detalhes, setDetalhes] = useState("");
-  const [cnpjcpf, setCnpjcpf] = useState("");
-  const [categoria, setCategoria] = useState("");
-  const [cepInput, setCepInput] = useState("");
-  const [infoCep, setInfoCep] = useState({});
-  const [visible, setVisible] = useState(false);
-  const { colors } = useTheme();
+const EditPerfil = () => {
+    const [empresa, setEmpresa] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [avatar, setAvatar] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [detalhes, setDetalhes] = useState("");
+    const [categoria, setCategoria] = useState("");
+    const [cepInput, setCepInput] = useState("");
+    const [infoCep, setInfoCep] = useState({});
+    const [visible, setVisible] = useState(false);
+    const { colors } = useTheme();
+    const [infos, setInfos] = useState({});
+    const navigation = useNavigation();
 
-const onPressItemHandler = (value) => {
-  setCategoria(value);
-};
+    const onPressItemHandler = (value) => {
+      setCategoria(value);
+    };
+    useEffect(() => {
+        Fire.shared.userInfos
+              .get()
+              .then(function (doc) {
+                setInfos(doc.data());
+              })
+              .catch(function (error) {
+                console.log("Error getting document:", error);
+              });
+      }, []);
 
-  async function handleSignUp() {
+  async function updateUserEdit() {
     setLoading(true);
-    Fire.shared.createUser({
+    Fire.shared.updateUser({
     empresa: empresa,
-    email: email,
-    password: password,
     avatar: avatar,
     detalhes: detalhes,
-    cnpjcpf: cnpjcpf,
     infoCep: infoCep,
     categoria: categoria,
     });
     setLoading(false);
-  } 
+    navigation.navigate("Profile");
+  };
+
   function cepController() {
+    setLoading(true);
     cep(cepInput).then(function (result) {
       setInfoCep(result);
+      setLoading(false);
     })
     .catch(function (error) {
       console.log("Error getting document:", error);
@@ -61,60 +74,59 @@ const onPressItemHandler = (value) => {
       setAvatar(result.uri);
     }
 };
-
     return(
       <Provider>
-          <ScrollView showsVerticalScrollIndicator={false} style={{marginHorizontal: 20}}>
+          <ScrollView>
           <View style={styles.form}>
-            <TouchableOpacity style={styles.fotoPerfil} onPress= {() => handlePickAvatar()}>
-              <Image source={{uri:avatar}} fadeDuration={800} style={styles.avatar} />
-              <View style={{ alignItems: "center", paddingTop: 30}}>
-                <IconButton  icon="camera" color="black" size={40} />
-                <Text style={{ color: "black", fontSize: 16}}>Carregar imagem</Text>
-              </View>
-            </TouchableOpacity>        
             <View style={styles.boxViewsInput}>
               <TextInput
+                disabled={true}
                 mode= "flat"
-                placeholder= "CNPJ / CPF"
+                placeholder= {infos.cnpjcpf}
                 autoCapitalize="words"
-                value={cnpjcpf}
-                onChangeText={setCnpjcpf}
               />
             </View>
             <View style={styles.boxViewsInput}>
             <TextInput
                 mode= "flat"
-                placeholder= "Nome da Empresa"
+                placeholder= {infos.empresa}
                 labelStyle={{
                   fontWeight: "bold",
                   color: "#696969",
                 }}
                 autoCapitalize="words"
-                value={empresa}
+                value={empresa ? (empresa):(infos.empresa)}
                 onChangeText={setEmpresa}
               />
             </View>
-            <View style={styles.boxViewsInput}>
+            <View style={{flexDirection:"row", marginBottom: 10, alignItems: "center"}}>
             <TextInput
                 mode= "flat"
-                placeholder= "CEP"
+                placeholder= {infos.cep}
                 autoCapitalize="none"
                 value={cepInput}
                 onChangeText={setCepInput}
+                style={{flex:1}}
               />
+              <TouchableOpacity onPress= {()=> cepController()} style={styles.buttonCep}>
+                {loading ? (
+                  <ActivityIndicator animating={true} color= {colors.primary} size="small" style={{ paddingHorizontal: 18}} />
+                ) : (
+                  <Text >BUSCAR</Text>
+                )}
+              </TouchableOpacity>
             </View>
-            <View style={{marginBottom: 10, marginHorizontal: -5, flexDirection: "row"}}>
+            <View style={{marginVertical: 7, marginHorizontal: -5, flexDirection: "row"}}>
             <TextInput
                 mode= "flat"
-                placeholder= "Cidade"
+                placeholder= {infos.cidade}
                 autoCapitalize="words"
                 value={infoCep.city}
                 style={{flex:1, marginHorizontal: 5}}
               />
               <TextInput
                 mode= "flat"
-                placeholder= "Estado"
+                placeholder= {infos.estado}
                 autoCapitalize="words"
                 value={infoCep.state}
                 style={{flex:1, marginHorizontal: 5}}
@@ -123,7 +135,7 @@ const onPressItemHandler = (value) => {
             <View style={styles.boxViewsInput}>
             <TextInput
                 mode= "flat"
-                placeholder= "Bairro"
+                placeholder= {infos.bairro}
                 autoCapitalize="words"
                 value={infoCep.neighborhood}
               />
@@ -131,19 +143,17 @@ const onPressItemHandler = (value) => {
             <View style={styles.boxViewsInput}>
             <TextInput
                 mode= "flat"
-                placeholder= "Rua*"
+                placeholder= {infos.rua}
                 autoCapitalize="words"
                 value={infoCep.street}
               />
             </View>
-            
             <Menu
               style={{
                 width: "90%"
               }}
               contentStyle={{
                 maxHeight: 300,
-                top: -100
               }}
               visible={visible}
               onDismiss={() => setVisible(false)}
@@ -306,16 +316,17 @@ const onPressItemHandler = (value) => {
                 disabled={true}
                 mode= "flat"
                 placeholder= "-"
-                autoCapitalize="words"
-                value={categoria.toUpperCase()}
+                autoCapitalize="sentences"
+                value={categoria?(categoria):(infos.categoria)}
                 onChangeText={setCategoria}
               />
             </View>
             <View style={styles.boxViewsInput}>
             <TextInput
                 mode= "flat"
-                placeholder="Serviços prestados*"
+                placeholder={infos.detalhes}
                 multiline
+                maxLength={280}
                 autoCapitalize="none"
                 value={detalhes}
                 onChangeText={setDetalhes}
@@ -324,7 +335,8 @@ const onPressItemHandler = (value) => {
             <View style={styles.boxViewsInput}>
             <TextInput
                 mode= "flat"
-                placeholder= "Email*"
+                disabled
+                placeholder= {infos.email}
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
@@ -333,6 +345,7 @@ const onPressItemHandler = (value) => {
             <View style={styles.boxViewsInput}>
             <TextInput
                 mode= "flat"
+                disabled
                 placeholder= "Senha*"
                 secureTextEntry={true}
                 autoCapitalize="none"
@@ -341,11 +354,11 @@ const onPressItemHandler = (value) => {
               />
             </View>
           </View>
-          <TouchableOpacity onPress= {()=> handleSignUp() } style={styles.button}>
+          <TouchableOpacity onPress= {()=> updateUserEdit() } style={styles.button}>
             {loading ? (
-              <ActivityIndicator animating={true} color= "white" />
+              <ActivityIndicator animating={true} color= "white" size="small" />
             ) : (
-              <Text style={{ color: "white", fontSize: 18,  marginVertical: 15}}>CONCLUIR</Text>
+              <Text style={{ color: colors.accent, fontSize: 16, marginVertical: 10}}>CONCLUIR</Text>
             )}
           </TouchableOpacity>
           </ScrollView>
@@ -354,11 +367,20 @@ const onPressItemHandler = (value) => {
 }
 const styles = StyleSheet.create({
     form: {
-      width: "100%",
-      marginVertical: 20
+      marginHorizontal: 20
     },
     boxViewsInput: {
-      marginVertical: 7,
+      marginVertical: 7
+    },
+    buttonCep:{
+      color: "#ffd300",
+      height: 63,
+      paddingVertical: 20,
+      paddingHorizontal: 20,
+      marginLeft: 5,
+      borderRadius: 5,
+      borderWidth: 1,
+      borderColor: "#ffd300"
     },
     button: {
       height: 60,
@@ -369,17 +391,18 @@ const styles = StyleSheet.create({
     },
     fotoPerfil:{
         backgroundColor: "#ffd24d",
-        borderRadius: 10,
+        borderRadius: 100,
         alignSelf: "center",
-        width: 350,
-        height: 200
+        height: 200,
+        width: 200,
+        marginTop: 10
       },
     avatar: {
         position: "absolute",
-        width: 350,
-        height: 200,
-        borderRadius: 10,
+        width: 195,
+        height: 195,
+        borderRadius: 100,
         zIndex: 2 
     },
   });
-export default FormRegister;
+export default EditPerfil;
