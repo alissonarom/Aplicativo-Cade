@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import FabHome from '../components/FabHome';
 import 'firebase/firestore';
 import "firebase/auth";
+import Fire from '../config/Fire';
 import * as firebase from "firebase";
 require('firebase/firestore');
 import moment from 'moment';
@@ -21,8 +22,26 @@ export default function Home() {
   const navigation = useNavigation();
   const { colors } = useTheme();
   const [enable, setEnable] = useState(true)
+  const [infos, setInfos] = useState({});
+  const [userOn,setUserOn] = useState(false)
 
   useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+     if(user){
+      Fire.shared.userInfos
+      .get()
+      .then(function (doc) {
+        setInfos(doc.data());
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
+       setUserOn(true)
+
+     } else {
+       setUserOn(false)
+     }
+    });
     console.disableYellowBox = true;
     const DataSearch = 
     firebase.firestore().collection("users")
@@ -34,11 +53,11 @@ export default function Home() {
           key: documentSnapshot.id,
         });
       });
-      setFilteredDataSource();
       setMasterDataSource(users);
       setLoading(false);
-    });    
-  }, []);
+    });
+    
+      }, []);
 
   const Logomarca = () => {
     return(
@@ -190,17 +209,33 @@ export default function Home() {
       <StatusBar barStyle="dark-content" backgroundColor="#ffd300" />
       <Logomarca/>
       <View style={styles.topHome}>
-        <Searchbar
-          platform="android"
-          onChangeText={(text) => searchFilterFunction(text)}
-          onClear={() => searchFilterFunction('')}
-          placeholder="Cadê?"
-          placeholderTextColor= "grey"
-          value={search}
-          style={{
-            marginHorizontal: 20
-          }}
-        />
+      <View style={styles.boxFilters}>
+        <View>
+          {
+            userOn ?
+            (<Avatar.Image source={{uri: infos.avatar}}/>):
+            (<IconButton
+              icon="account"
+              color={colors.accent}
+              size={30}
+              style={{borderColor: colors.accent, borderWidth: 2}}
+              />)
+          }
+        </View>
+          <Searchbar
+            platform="android"
+            onChangeText={(text) => searchFilterFunction(text)}
+            onClear={() => searchFilterFunction('')}
+            placeholder="Cadê? prestadores e serviços"
+            placeholderTextColor= "grey"
+            inputStyle={{fontSize: 14}}
+            value={search}
+            style={{
+              margin: 5,
+              flex:1,
+            }}
+          />
+        </View>
         <View style={styles.boxFilters}>
           <TextInput
             mode="flat"
@@ -223,9 +258,6 @@ export default function Home() {
             disabled={enable}
           />
         </View>
-        <Button mode="contained" style={{ margin: 10}} labelStyle={{color: colors.accent}} onPress={ () => navigation.navigate("Register")}>
-          CADASTRE-SE E ANUNCIE
-        </Button>
       </View>
         <FlatList 
           style={{paddingHorizontal: 5}}
@@ -261,17 +293,19 @@ const styles = StyleSheet.create({
   },
   topHome: {
     backgroundColor: "#ffd300",
-    alignItems: "center"
+    alignItems: "center",
+    paddingBottom:10
   },
   boxFilters: {
     flexDirection:"row",
-    marginHorizontal: 15
+    marginHorizontal: 15,
+    alignItems: "center"
   },
   inputSearch: {
     backgroundColor: "#fff",
     height: 50,
     flex: 1,
-    margin: 5,
+    marginHorizontal: 5,
     
   },
   fab: {

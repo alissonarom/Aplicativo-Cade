@@ -84,41 +84,59 @@ export default function Profile() {
         return <ActivityIndicator />;
       }
   
-  const renderItem = ({ item }) => (
-    <Card style={{
-      margin: 10,
-      borderWidth: 0,
-      marginBottom: 15,
-      shadowOpacity: 0.23,
-      shadowRadius: 2.62,
-      elevation: 4,
-    }}>
-      <Card.Title
-        title={item.autor}
-        titleStyle={{fontSize: 17, color: colors.cinzaEscuro}}
-        subtitleStyle={{fontSize: 13, lineHeight: 15 }}
-        subtitleNumberOfLines={2}
-        subtitle={(infos.bairro)+(" - ")+(infos.cidade)}
-        left={(props) => <Avatar.Image {...props} source={{uri: infos.avatar}} style={{marginTop: 20}}/>}
-        right={(props) => <IconButton {...props} icon="check-decagram" size={30} color={colors.cinzaMedio} onPress={() => {}} />}
-      />
-      <Card.Content>
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: -15, marginLeft: 55}}>
+      const renderItem = ({ item }) => (
+        <Card style={{
+          margin: 10,
+          borderWidth: 0,
+          marginBottom: 15,
+          shadowOpacity: 0.23,
+          shadowRadius: 2.62,
+          elevation: 4,
+        }}>
+          <Card.Title
+            title={item.autor}
+            titleStyle={{fontSize: 17, color: colors.cinzaEscuro}}
+            subtitleStyle={{fontSize: 13, lineHeight: 15 }}
+            subtitleNumberOfLines={2}
+            subtitle={(infos.bairro)+(" - ")+(infos.cidade)}
+            left={(props) => <Avatar.Image {...props} source={{uri: infos.avatar}} style={{marginTop: 20}}/>}
+            right={(props) => <IconButton {...props} icon="check-decagram" size={30} color={colors.cinzaMedio} onPress={() => {}} />}
+          />
+          <Card.Content>
+            <View style={{ flexDirection: "row", alignItems: "center", marginTop: -15, marginLeft: 55}}>
+                <IconButton
+                  icon="clock"
+                  color={colors.cinzaMedio}
+                  size={15}
+                  style={{marginHorizontal: -1}}
+                  />
+                <Text style={{ color: colors.cinzaMedio, fontSize: 12}}>
+                  {moment(item.timestamp).locale('pt-br').fromNow(true)}
+                </Text>
+              </View>
+            <Paragraph>{item.description}</Paragraph>
+          </Card.Content>
+          <Card.Cover source={{ uri: item.image }} style={{height: 300}} />
+          <Card.Actions style={{alignItems: "center"}}>
             <IconButton
-              icon="clock"
-              color={colors.primary}
-              size={15}
-              style={{marginHorizontal: -5}}
-              />
-            <Text style={{ color: colors.cinzaMedio, fontSize: 12}}>
-              {moment(item.timestamp).locale('pt-br').fromNow(true)}
-            </Text>
-          </View>
-        <Paragraph>{item.description}</Paragraph>
-      </Card.Content>
-      <Card.Cover source={{ uri: item.image }} style={{height: 300}} />
-    </Card> 
-);
+              icon="checkbox-multiple-marked-circle"
+              color={colors.cinzaMedio}
+              size={25}
+            />
+             <Text style={{ color: colors.cinzaMedio, fontSize: 18}}>
+                  {infos.avaliação}
+                </Text>
+            <IconButton
+              icon="comment-text-multiple"
+              color={colors.cinzaMedio}
+              size={25}
+            />
+                <Text style={{ color: colors.cinzaMedio, fontSize: 18}}>
+                  {infos.avaliação}
+                </Text>
+          </Card.Actions>
+        </Card> 
+    );
 
   return (
     <SafeAreaView style={styles.container}>

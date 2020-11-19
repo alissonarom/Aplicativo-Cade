@@ -67,33 +67,28 @@ class Fire{
         );
     });
   };
-  
-updateUser = async ({empresa, avatar, detalhes, infoCep, categoria}) => {
-  let remoteUri = null
 
+updateUserCategoria = async ({categoria}) => {
   try {
     let db = this.firestore.collection("users").doc(this.uid);
 
-      await db.set({
-      empresa: empresa,
-      avatar: avatar,
-      detalhes: detalhes,
-      cep: infoCep.cep,
-      cidade: infoCep.city,
-      estado: infoCep.state,
-      bairro:infoCep.neighborhood,
-      rua:infoCep.street,
-      categoria: categoria
+      db.set({
+        categoria: categoria
     }, {merge: true});
-
-    if (avatar) {
-      remoteUri =  this.uploadPhotoAsync(avatar, `avatars/${this.uid}`);
-
-      db.set({avatar: remoteUri}, {merge: true});
-    }
-
   } catch (error) {
-    Alert.alert("Informações salvas comsucesso!");
+    Alert.alert("Categoria atualizada com sucesso!");
+    }
+};
+
+updateUserName = async ({empresa}) => {
+  try {
+    let db = this.firestore.collection("users").doc(this.uid);
+
+      db.set({
+      empresa: empresa
+    }, {merge: true});
+  } catch (error) {
+    Alert.alert("Nome atualizado com sucesso!");
     }
 };
 
