@@ -14,7 +14,6 @@ import 'firebase/storage';
 import "firebase/auth";
 import {Alert} from "react-native";
 
-
 class Fire{
  constructor() {
    if (!firebase.apps.length) {
@@ -68,6 +67,22 @@ class Fire{
     });
   };
 
+updateUserEndereco = async ({infoCep}) => {
+  try {
+    let db = this.firestore.collection("users").doc(this.uid);
+
+      db.set({
+        bairro:infoCep.neighborhood,
+        cep: infoCep.cep,
+        cidade: infoCep.city,
+        estado: infoCep.state,
+        rua: infoCep.street,
+    }, {merge: true});
+  } catch (error) {
+    Alert.alert("Categoria atualizada com sucesso!");
+    }
+};
+
 updateUserCategoria = async ({categoria}) => {
   try {
     let db = this.firestore.collection("users").doc(this.uid);
@@ -80,19 +95,19 @@ updateUserCategoria = async ({categoria}) => {
     }
 };
 
-updateUserName = async ({empresa}) => {
+updateUserName = async ({nome}) => {
   try {
     let db = this.firestore.collection("users").doc(this.uid);
 
       db.set({
-      empresa: empresa
+      nome: nome
     }, {merge: true});
   } catch (error) {
     Alert.alert("Nome atualizado com sucesso!");
     }
 };
 
-createUser = async ({empresa, email, password, avatar, detalhes, cnpjcpf, infoCep, categoria }) => {
+createUser = async ({nome, email, password, avatar, detalhes, cnpjcpf, infoCep, categoria }) => {
   let remoteUri = null
 
   try {
@@ -101,7 +116,7 @@ createUser = async ({empresa, email, password, avatar, detalhes, cnpjcpf, infoCe
     let db = this.firestore.collection("users").doc(this.uid);
 
     db.set({
-      empresa: empresa,
+      nome: nome,
       email: email,
       avatar: avatar,
       detalhes: detalhes,
@@ -111,8 +126,37 @@ createUser = async ({empresa, email, password, avatar, detalhes, cnpjcpf, infoCe
       cidade: infoCep.city,
       estado: infoCep.state,
       rua: infoCep.street,
-      categoria: categoria,
-      avaliação: 0,
+      categoria: categoria
+    });
+
+    if (avatar) {
+        remoteUri =  this.uploadPhotoAsync(avatar, `avatars/${this.uid}`);
+
+        db.set({avatar: remoteUri}, {merge: true});
+    }
+    
+  } catch (error) {
+    Alert.alert("Estamos carregando suas informações");
+    }
+};
+
+createMembro = async ({nome, email, password, avatar, infoCep}) => {
+  let remoteUri = null
+
+  try {
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
+  
+    let db = this.firestore.collection("users").doc(this.uid);
+    
+    db.set({
+      nome: nome,
+      email: email,
+      avatar: avatar,
+      bairro:infoCep.neighborhood,
+      cep: infoCep.cep,
+      cidade: infoCep.city,
+      estado: infoCep.state,
+      rua: infoCep.street,
       uid: this.uid
     });
 
@@ -151,6 +195,9 @@ createUser = async ({empresa, email, password, avatar, detalhes, cnpjcpf, infoCe
     return firebase.firestore().collection("users").doc(this.uid);
   }
 
+  get userRef(){
+  return firebase.firestore().collection("users");
+}
   get timestamp() {
     return Date.now();
   }

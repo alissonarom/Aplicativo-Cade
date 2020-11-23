@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import * as firebase from "firebase";
 import "firebase/firestore";
 import Fire from '../config/Fire'
-import { useNavigation } from "@react-navigation/native";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";

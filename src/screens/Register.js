@@ -17,7 +17,7 @@ import Fire from '../config/Fire';
 import cep from 'cep-promise';
 
 export default function Register () {
-  const [empresa, setEmpresa] = useState("");
+  const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passIcon, setPassIcon] = useState("eye");
@@ -57,7 +57,7 @@ export default function Register () {
   async function handleSignUp() {
     setLoading(true);
     Fire.shared.createUser({
-    empresa: empresa,
+    nome: nome,
     email: email,
     password: password,
     avatar: avatar,
@@ -116,8 +116,8 @@ return (
                   color: "#696969",
                 }}
                 autoCapitalize="words"
-                value={empresa}
-                onChangeText={setEmpresa}
+                value={nome}
+                onChangeText={setNome}
               />
             </View>
             <View style={{flexDirection:"row", marginBottom: 10, alignItems: "center"}}>
@@ -138,7 +138,16 @@ return (
                 }}
                 type="outline"
                 onPress={() => cepController()}
-              >BUSCAR</Button>
+              >
+                {
+                  loading ?
+                  (
+                    <ActivityIndicator animating={true} color= "white" />
+                  ) : (
+                    <Text style={{ color: "white", fontSize: 18,  marginVertical: 15}}>buscar</Text>
+                  )
+                }
+              </Button>
             </View>
             <View style={{marginBottom: 10, marginHorizontal: -5, flexDirection: "row"}}>
             <TextInput

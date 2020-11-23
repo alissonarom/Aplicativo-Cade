@@ -8,9 +8,8 @@ import moment from 'moment';
 import 'moment/locale/pt-br';
 moment().format();
 
-export default function Modal({ route, navigation }) {
-  const {empresa, bairro, cidade, avatar, estado, detalhes, uid, categoria, avaliação} = route.params;
-  const [postServices, setPostServices] = useState([]);
+export default function Modal({ route }) {
+  const {nome, bairro, cidade, avatar, estado, detalhes, uid, categoria, avaliação} = route.params;
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const { colors } = useTheme();
@@ -121,7 +120,7 @@ export default function Modal({ route, navigation }) {
         
       </View>
       <View style={styles.cardPerfil}>
-      <Text style={{ fontSize: 30, color: colors.cinzaEscuro }}>{empresa}</Text>
+      <Text style={{ fontSize: 30, color: colors.cinzaEscuro }}>{nome}</Text>
       <Text style={{ fontSize: 12, color: colors.primary }}>{categoria}</Text>
       <View style={{flexDirection: "row", alignItems:"center"}}>
         <IconButton

@@ -1,41 +1,45 @@
 IMPLANTAÇÕES DA BUILD =
     [
-     --27,5% >>> (sex 23/10)
-     --20,8% >> (seg 26/10)
-     -18,7% >> (sex 30/10) 
+        -27,5% >>> (sex 23/10)
+        -20,8% >> (seg 26/10)
+        -18,7% >> (sex 30/10) 
+        -35,3 >>>> (ter 10/11)
+        -70,9 >>>>>>>>(seg 16/11)
     ]
 
-- PESQUISA = 95%
-            - ativar filtros cidade\bairro = 80% (GitHub Issue) 90%
+- PESQUISA = 90% = 11,25%
+            - ativar filtros cidade\bairro = 80% (GitHub Issue) 90% // precisa concluir
             - layout de pesquisa (SearchBar Animation) = 100%
 
-- PERFIL = 36,6%
-    - adicionar função editar = 50% {
-        inputEditável para (detalhes): https://reactnative.dev/docs/textinput
+- PERFIL = 75,9% = 9,48%
+    - adicionar função editar = 100% {
+        resolvido com código abstrato.
     }
             -- adicionar função Postar (*activityIndicator + video(+ gravar video) + tirar foto ) = 80%
             -- dados de contato (redes sociais, whatsapp, email) = 50%
 
-- CEP = 50%
-            - autocompletar traço separador = 50% (colocar active indicatornobotão de busca)
+- CEP = 50% = 6,25%
+            - autocompletar traço separador = 50% (colocar active indicatornobotão de busca = ok)
 
-- ROTAS = 30%
-    - criar rotas (permissões de rotas) = 30%
+- ROTAS = 80% = 10%
+    - criar rotas (permissões de rotas) = 80%
 
--- FUNÇÕES = 50% pronto
+-- FUNÇÕES = 50% = 6,25%
             - like = 50%
             - avaliar = 50%
+            - comentar = 50%
 
--- ADMOB = 50% (ID: ca-app-pub-1290340583370761~8158489211)
+-- ADMOB = 80% = 10% (ID: ca-app-pub-1290340583370761~8158489211)
 
--- LAYOUT GERAL = 15% *(alterar biblioteca para Material UI)
-            - padronizar tema = 80%
+-- LAYOUT GERAL = 97,5% = 12,18% *(alterar biblioteca para Material UI = ok)
+            - padronizar tema = 95% (componentes não pegaram Thema)
             - usar headers do RN = 100%
     
--- LOGOMARCA = 47%
+-- LOGOMARCA = 37,5% = 4,68%
             - definir AppIcon = 0%
             - definir amarelo C@dê = 100%
-            - definir logo = 50%
+            - definir logo = 100%
+            - definir avatar/mascote = 0%
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 WIREFRAME - CORES E FONTS

@@ -4,51 +4,43 @@ import {TouchableOpacity, View, StyleSheet, Text} from 'react-native';
 import Fire from '../config/Fire';
 import { useNavigation } from "@react-navigation/native";
 
-const EditNome = () => {
-  const [empresa, setEmpresa] = useState("");
+export default function EditNome({ route }) {
+  const {nome} = route.params;
+  const [newName, setNewName] = useState("");
   const [infos, setInfos] = useState({});
   const [loading, setLoading] = useState(false);
   const { colors } = useTheme();
   const navigation = useNavigation();
 
-  useEffect(() => {
-    Fire.shared.userInfos
-          .get()
-          .then(function (doc) {
-            setInfos(doc.data());
-          })
-          .catch(function (error) {
-            console.log("Error getting document:", error);
-          });
-  }, []);
-
+  
   async function updateName() {
     setLoading(true);
     Fire.shared.updateUserName({
-    empresa: empresa
+    nome: newName
     });
+    setLoading(false)
     navigation.navigate("Home");
   };
 
   return (
-          <View style={styles.boxViewsInput}>
-            <Text style={{margin: 15, fontSize: 20}}>Digite o novo nome</Text>
-            <TextInput
-              mode= "flat"
-              placeholder= {infos.empresa ? (infos.empresa):("Nome da Empresa")}
-              autoCapitalize="words"
-              value={empresa}
-              onChangeText={setEmpresa}
-              style={{margin: 20}}
-            />
-            <TouchableOpacity onPress= {()=> updateName() } style={styles.button}>
-              {loading ? (
-                <ActivityIndicator animating={true} color= "white" size="small" />
-              ) : (
-                <Text style={{ color: colors.accent, fontSize: 16, marginVertical: 10}}>CONCLUIR</Text>
-              )}
-            </TouchableOpacity>
-          </View>
+    <View style={styles.boxViewsInput}>
+      <Text style={{margin: 15, fontSize: 20}}>Digite o novo nome</Text>
+      <TextInput
+        mode= "flat"
+        placeholder= {nome}
+        autoCapitalize="words"
+        value={newName}
+        onChangeText={setNewName}
+        style={{margin: 20}}
+      />
+      <TouchableOpacity onPress= {()=> updateName() } style={styles.button}>
+        {loading ? (
+          <ActivityIndicator animating={true} color= "white" size="small" />
+        ) : (
+          <Text style={{ color: colors.accent, fontSize: 16, marginVertical: 10}}>CONCLUIR</Text>
+        )}
+      </TouchableOpacity>
+    </View>
   );
 };
 const styles = StyleSheet.create({
@@ -67,5 +59,3 @@ const styles = StyleSheet.create({
     alignItems:"center"
   },
 });
-
-export default EditNome;

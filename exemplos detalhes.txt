@@ -1,0 +1,54 @@
+descrição Play Store:
+
+WhatsApp do Facebook
+
+O WhatsApp Messenger é um app de mensagens GRATUITO para Android e outras plataformas. O WhatsApp usa a conexão à internet do seu celular (4G/3G/2G/EDGE ou Wi-Fi, conforme disponível) para que você possa enviar mensagens e fazer chamadas para seus amigos e familiares. Deixe o SMS de lado e comece a usar o WhatsApp para enviar e receber mensagens, chamadas, fotos, vídeos, documentos e mensagens de voz.
+
+POR QUE USAR O WHATSAPP:
+
+• SEM TARIFAS: o WhatsApp usa a conexão à internet do seu celular (4G/3G/2G/EDGE ou Wi-Fi, conforme disponível) para que você possa enviar mensagens e ligar para amigos e familiares, e não precise pagar por cada um desses recursos individualmente.* O WhatsApp é totalmente gratuito, sem tarifas de assinatura.
+
+• MULTIMÍDIA: envie e receba fotos, vídeos, documentos e mensagens de voz.
+
+• CHAMADAS GRATUITAS: ligue para seus amigos e familiares de graça utilizando o WhatsApp, mesmo se eles estiverem em outros países.* Todas as chamadas do WhatsApp utilizam a conexão à internet do seu celular ao invés do seu plano de voz ou plano de dados. (Observação: tarifas de dados poderão ser cobradas. Entre em contato com sua operadora para mais detalhes. Não é possível usar o WhatsApp para fazer ligações para números de emergência, como 190).
+
+• CONVERSAS EM GRUPO: divirta-se com as conversas em grupo e mantenha contato com seus amigos e familiares.
+
+• WHATSAPP WEB: você também pode enviar e receber mensagens do WhatsApp diretamente do navegador de internet do seu computador.
+
+• SEM TARIFAS INTERNACIONAIS: não há custo extra para enviar mensagens de WhatsApp para números de telefone internacionais. Converse com seus amigos ao redor do mundo e evite as tarifas de SMS internacionais.*
+
+• DIGA NÃO A NOMES DE USUÁRIO E SENHAS: por que se incomodar com nomes de usuários e senhas? O WhatsApp funciona com seu número de telefone, assim como o SMS, e se integra perfeitamente com a agenda de contatos do seu aparelho.
+
+• SEMPRE CONECTADO: com o WhatsApp, você está sempre conectado e não perderá nenhuma mensagem. Chega de dúvidas sobre estar ou não conectado.
+
+• CONECTE-SE RAPIDAMENTE COM SEUS CONTATOS: sua agenda de contatos é utilizada para que você possa se conectar de forma rápida e fácil com seus contatos que já usam o WhatsApp. Assim, você não terá que lembrar de nomes de usuários difíceis de memorizar.
+
+• MENSAGENS OFF-LINE: se você perder uma notificação ou desligar seu telefone, o WhatsApp salvará suas mensagens mais recentes para que você possa lê-las na próxima vez que usar o app.
+
+• E MUITO MAIS: compartilhe sua localização em tempo real, envie/receba contatos, personalize papéis de parede e sons de notificação, envie mensagens para vários contatos de uma só vez com as listas de transmissão e muito mais!
+
+\*Tarifas de dados poderão ser cobradas. Entre em contato com sua operadora para mais detalhes.
+
+
+--------------------
+
+facebook: 
+
+Manter-se em contato com os amigos está mais rápido que nunca,
+
+• Veja o que os amigos estão fazendo
+• Compartilhe atualizações, fotos e vídeos
+• Receba notificações quando amigos curtem e comentam suas publicações
+• Jogue jogos e use seus aplicativos favoritos
+• Compre e venda localmente no Facebook Marketplace
+
+----------
+PAGES BUILD APP
+
+https://docs.expo.io/distribution/introduction/
+https://docs.expo.io/distribution/app-stores/
+https://docs.expo.io/distribution/building-standalone-apps/#1-install-expo-cli
+https://docs.expo.io/distribution/uploading-apps/
+https://github.com/expo/fyi/blob/master/first-android-submission.md
+https://docs.expo.io/distribution/app-signing/

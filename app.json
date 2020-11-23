@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "cade",
+    "privacy":"unlisted",
+    "name": "Cadê",
     "slug": "cade",
     "platforms": [
       "ios",
@@ -26,12 +27,16 @@
       "supportsTablet": true,
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-1290340583370761~8158489211"
-      }
+      },
+      "bundleIdentifier": "com.aplicativocade",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-1290340583370761~8158489211"
-      }
+      },
+      "package": "com.aplicativocade",
+      "versionCode": 1
     },
     "description": ""
   }

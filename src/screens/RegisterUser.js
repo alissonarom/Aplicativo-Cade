@@ -13,24 +13,23 @@ import {
 import { IconButton, TextInput, ActivityIndicator, Button, Provider, useTheme, Menu  } from 'react-native-paper';
 import userPermissions from "../utils/UserPermissions";
 import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
 import Fire from '../config/Fire';
 import cep from 'cep-promise';
 
-export default function Register () {
-  const [empresa, setEmpresa] = useState("");
+export default function RegisterUser () {
+  const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passIcon, setPassIcon] = useState("eye");
   const [passBool, setPassBool] = useState(true);
   const [avatar, setAvatar] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [detalhes, setDetalhes] = useState("");
-  const [cnpjcpf, setCnpjcpf] = useState("");
-  const [categoria, setCategoria] = useState("");
   const [cepInput, setCepInput] = useState("");
   const [infoCep, setInfoCep] = useState({});
-  const [visible, setVisible] = useState(false);
   const { colors } = useTheme();
+  const navigation = useNavigation();
+
 
   function cepController() {
     cep(cepInput).then(function (result) {
@@ -40,9 +39,11 @@ export default function Register () {
       console.log("Error getting document:", error);
     });
   };
+  
   const onPressItemHandler = (value) => {
     setCategoria(value);
   };
+
   function toggleIconPass() {
     if (passBool === false) {
       setPassIcon("eye");
@@ -51,21 +52,20 @@ export default function Register () {
       setPassIcon("eye-off");
       setPassBool(false)
     }
-  }
+  };
+
   LayoutAnimation.easeInEaseOut();
 
-  async function handleSignUp() {
+  async function handleSignUpUser() {
     setLoading(true);
-    Fire.shared.createUser({
-    empresa: empresa,
+    Fire.shared.createMembro({
+    nome: username,
     email: email,
     password: password,
     avatar: avatar,
-    detalhes: detalhes,
-    cnpjcpf: cnpjcpf,
     infoCep: infoCep,
-    categoria: categoria,
     });
+    navigation.navigate("Home");
     setLoading(false);
   } 
 
@@ -74,7 +74,7 @@ export default function Register () {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 1,
     })
 
@@ -94,33 +94,23 @@ return (
               <Image source={{uri:avatar}} fadeDuration={800} style={styles.avatar} />
               <View style={{ alignItems: "center", top : 40}}>
                 <IconButton  icon="camera" color="black" size={40} />
-                <Text style={{ color: "black", fontSize: 16}}>Carregar imagem</Text>
+                <Text style={{ color: "black", fontSize: 16}}>Foto de perfil</Text>
               </View>
-            </TouchableOpacity>        
-            <View style={styles.boxViewsInput}>
-              <TextInput
-                mode= "flat"
-                placeholder= "CNPJ / CPF"
-                autoCapitalize="words"
-                maxLength={14}
-                value={cnpjcpf}
-                onChangeText={setCnpjcpf}
-              />
-            </View>
+            </TouchableOpacity> 
             <View style={styles.boxViewsInput}>
             <TextInput
                 mode= "flat"
-                placeholder= "Nome da Empresa"
+                placeholder= "Nome Completo"
                 labelStyle={{
                   fontWeight: "bold",
                   color: "#696969",
                 }}
                 autoCapitalize="words"
-                value={empresa}
-                onChangeText={setEmpresa}
+                value={username}
+                onChangeText={setUserName}
               />
             </View>
-            <View style={{flexDirection:"row", marginBottom: 10, alignItems: "center"}}>
+            <View style={{flexDirection:"row", marginBottom: 10}}>
             <TextInput
                 mode= "flat"
                 placeholder= "CEP"
@@ -143,14 +133,14 @@ return (
             <View style={{marginBottom: 10, marginHorizontal: -5, flexDirection: "row"}}>
             <TextInput
                 mode= "flat"
-                placeholder= "Cidade"
+                placeholder= "Cidade*"
                 autoCapitalize="words"
                 value={infoCep.city}
                 style={{flex:1, marginHorizontal: 5}}
               />
               <TextInput
                 mode= "flat"
-                placeholder= "Estado"
+                placeholder= "Estado*"
                 autoCapitalize="words"
                 value={infoCep.state}
                 style={{flex:1, marginHorizontal: 5}}
@@ -159,7 +149,7 @@ return (
             <View style={styles.boxViewsInput}>
             <TextInput
                 mode= "flat"
-                placeholder= "Bairro"
+                placeholder= "Bairro*"
                 autoCapitalize="words"
                 value={infoCep.neighborhood}
               />
@@ -170,189 +160,6 @@ return (
                 placeholder= "Rua*"
                 autoCapitalize="words"
                 value={infoCep.street}
-              />
-            </View>
-            
-            <Menu
-              style={{
-                width: "90%"
-              }}
-              contentStyle={{
-                maxHeight: 300,
-              }}
-              visible={visible}
-              onDismiss={() => setVisible(false)}
-              anchor={
-                <Button
-                  icon="menu-down"
-                  contentStyle={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: colors.cinzaMedio
-                  }}
-                  color={colors.cinzaMedio}
-                  mode="flat"
-                  onPress={() => {
-                    setVisible(true);
-                  }}>
-                  selecione seu ramo de atividade{' '}
-                </Button>
-            }>
-              <ScrollView>
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Cantor, animador de festa');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Cantor, animador de festa"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Consultoria');
-                  setVisible(false);
-                }}
-                contentStyle={{
-                  width: 300
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Consultoria"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Construção, reparos, reformas');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Construção, reparos, reformas"
-              />
-               <Menu.Item
-                onPress={() => {
-                  setCategoria('Cursos e treinamentos online');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Cursos e treinamentos online"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Cozinheiro, churrasqueiro profissional');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Cozinheiro, churrasqueiro profissional"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Diarista, freelancer');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Diarista, freelancer"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Freteiro, montador de móveis');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Freteiro, montador de móveis"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Locação ambiente de festas');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Locação ambiente de festas"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Limpeza jardinagem');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Limpeza jardinagem"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Marido de aluguel');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Marido de aluguel"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Serviços mecânicos');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Serviços mecânicos"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Saúde, estética e beleza');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Saúde, estética e beleza"
-              />
-              <Menu.Item
-                onPress={() => {
-                  setCategoria('Marketing');
-                  setVisible(false);
-                }}
-                titleStyle={{
-                  width:340
-                }}
-                title="Marketing"
-              />
-              </ScrollView>
-            </Menu>
-            <View style={styles.boxViewsInput}>
-              <TextInput
-                mode= "flat"
-                placeholder= "-"
-                autoCapitalize="characters"
-                value={categoria}
-                onChangeText={setCategoria}
-              />
-            </View>
-            <View style={styles.boxViewsInput}>
-            <TextInput
-                mode= "flat"
-                placeholder="Serviços prestados*"
-                multiline
-                autoCapitalize="sentences"
-                value={detalhes}
-                onChangeText={setDetalhes}
               />
             </View>
             <View style={styles.boxViewsInput}>
@@ -385,7 +192,7 @@ return (
                  }} />
             </View>
           </View>
-          <TouchableOpacity onPress= {()=> handleSignUp() } style={styles.button}>
+          <TouchableOpacity onPress= {()=> handleSignUpUser() } style={styles.button}>
             {loading ? (
               <ActivityIndicator animating={true} color= "white" />
             ) : (

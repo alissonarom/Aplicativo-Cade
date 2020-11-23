@@ -10,6 +10,8 @@ const theme = {
     ...DefaultTheme.colors,
     primary: '#ffd300',
     primaryEscuro: '#ffbf00',
+    seguindo: '#2962ff',
+    online: '#32CD32',
     accent: '#ffffff',
     h2: '#b5b5b5' ,
     cinzaClaro: '#cfcfcf',

@@ -198,7 +198,7 @@ const EditNome = () => {
             </Menu>
             <TextInput
               mode= "outlined"
-              placeholder= {infos.categoria ? (infos.categoria):("Nome da Empresa")}
+              placeholder= {infos.categoria}
               autoCapitalize="characters"
               value={categoria.toUpperCase()}
               onChangeText={setCategoria}

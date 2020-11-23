@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, FAB, Portal, Provider, useTheme } from 'react-native-paper';
+import { FAB, Portal, Provider, useTheme } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import * as firebase from "firebase";
 
@@ -7,16 +7,18 @@ const FabHome = () => {
   const [state, setState] = useState({ open: false });
   const { colors } = useTheme();
   const navigation = useNavigation(); 
-  const [userOn,setUserOn] = useState(false)
+  const [userOn,setUserOn] = useState(false);
+
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
      if(user){
-       setUserOn(true)
+        setUserOn(true);
      } else {
        setUserOn(false)
      }
     });    
+    
       }, []);
 
   const onStateChange = ({ open }) => setState({ open });

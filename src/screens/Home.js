@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, StatusBar, Image, FlatList, Text, SafeAreaView} from "react-native";
-import { Searchbar, TextInput, useTheme, Button, Card, Avatar, IconButton} from 'react-native-paper';
+import { View, StyleSheet, StatusBar, Image, FlatList, Text, SafeAreaView, LayoutAnimation} from "react-native";
+import { Searchbar, TextInput, useTheme, Card, Avatar, IconButton, ActivityIndicator} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import FabHome from '../components/FabHome';
 import 'firebase/firestore';
@@ -37,13 +37,12 @@ export default function Home() {
         console.log("Error getting document:", error);
       });
        setUserOn(true)
-
      } else {
        setUserOn(false)
      }
+
     });
     console.disableYellowBox = true;
-    const DataSearch = 
     firebase.firestore().collection("users")
     .onSnapshot(querySnapshot => {
       const users = [];
@@ -56,7 +55,6 @@ export default function Home() {
       setMasterDataSource(users);
       setLoading(false);
     });
-    
       }, []);
 
   const Logomarca = () => {
@@ -150,7 +148,7 @@ export default function Home() {
       >
         <Card 
           onPress={() => navigation.navigate("Modal", {
-            empresa: item.empresa,
+            nome: item.nome,
             bairro: item.bairro,
             cidade: item.cidade,
             avatar: item.avatar,
@@ -163,7 +161,7 @@ export default function Home() {
         >
         {
          <Card.Title
-         title={item.empresa}
+         title={item.nome}
          titleStyle={{marginStart: 60, fontSize: 17, marginTop: -20, color: colors.cinzaEscuro}}
          subtitleStyle={{marginStart: 60, marginEnd: 10, fontSize: 13, lineHeight: 15 }}
          subtitleNumberOfLines={2}
@@ -204,24 +202,31 @@ export default function Home() {
     );
   };
 
+  LayoutAnimation.easeInEaseOut();
+
+  if (loading) {
+    return <View style={{ alignItems: "center"}}>
+            <ActivityIndicator color={colors.primary} size="large" style={{marginTop: 300}}/>
+            <Text>Bem vindo!</Text>
+          </View>
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffd300" />
       <Logomarca/>
       <View style={styles.topHome}>
-      <View style={styles.boxFilters}>
-        <View>
-          {
-            userOn ?
-            (<Avatar.Image source={{uri: infos.avatar}}/>):
-            (<IconButton
-              icon="account"
-              color={colors.accent}
-              size={30}
-              style={{borderColor: colors.accent, borderWidth: 2}}
+        <View style={styles.boxFilters}>
+          <View>
+            {userOn ?
+              (<Avatar.Image size={50} source={{uri: infos.avatar}}/>):
+              (<IconButton
+                icon="account"
+                size={30}
+                color={colors.primary}
+                style={{backgroundColor: colors.accent}}
               />)
-          }
-        </View>
+            }
+          </View>
           <Searchbar
             platform="android"
             onChangeText={(text) => searchFilterFunction(text)}

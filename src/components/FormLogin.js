@@ -81,7 +81,7 @@ const FormLog = () => {
                 <Text style={{ color: colors.accent, fontWeight: "500", fontSize: 16, marginVertical: 10 }}>ENTRAR</Text>
               )}
             </TouchableOpacity>        
-          <TouchableOpacity style={styles.buttonLogin} onPress={() => navigation.navigate("Register")}>
+          <TouchableOpacity style={styles.buttonLogin} onPress={() => navigation.navigate("JumperRegister")}>
            <Text style={{ color: colors.accent, fontSize: 16 }}>Cadastrar</Text>
           </TouchableOpacity>
           </View>
