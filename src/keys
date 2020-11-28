@@ -1,0 +1,3 @@
+zoom: alissonmorais.br Aa@91089047
+
+expo build:android -t app-bundle

@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "cade1",
+    "name": "Cadê",
     "slug": "cade1",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffd300"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,13 +17,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alissonarom.cade1",
+      "buildNumber": "1.0.4"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundColor": "#FFD300"
+      },
+      "package": "com.alissonarom.cade1",
+      "versionCode": 4,
+      "permissions": ["CAMERA_ROLL"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
