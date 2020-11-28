@@ -26,7 +26,7 @@ const RatingsForm = () => {
     <View>
       <Rating
         type='star'
-        ratingColor={colors.primary}
+        ratingColor="#ffd300"
         defaultRating={1}
         imageSize={40}
         onFinishRating={setCountRate}
